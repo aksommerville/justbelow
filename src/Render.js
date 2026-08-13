@@ -1,7 +1,7 @@
 /* Render.js
  */
  
-const TS = 16;
+export const TS = 16;
  
 export class Render {
   constructor(app, cvs) {
@@ -63,8 +63,13 @@ export class Render {
       if ((x < xlo) || (x > xhi)) continue;
       const y = Math.round(sprite.y * TS - cy);
       if ((y < ylo) || (y > yhi)) continue;
-      const srcx=0, srcy=128;//TODO
-      ctx.drawImage(this.gfx, srcx, srcy, TS, TS, x-(TS>>1), y-(TS>>1), TS, TS);
+      if (sprite.render) {
+        sprite.render(ctx, x, y);
+      } else {
+        //XXX fallback for incomplete sprite
+        const srcx=0, srcy=128;//TODO
+        ctx.drawImage(this.gfx, srcx, srcy, TS, TS, x-(TS>>1), y-(TS>>1), TS, TS);
+      }
     }
   }
   

@@ -3,7 +3,8 @@
  * {
  *   w,h: int, in cells
  *   v: Uint8Array(w*h)
- *   herox, heroy
+ *   herox, heroy,
+ *   trv: {x,y}[],
  * }
  * Cell values are tileid in gfx.png.
  */
@@ -39,6 +40,7 @@ export function generateMap() {
   const h = 270;
   const islc = 10;
   const islspc = 40;
+  const trc = 20;
   const v = new Uint8Array(w * h);
   
   /* Seed the initial islands.
@@ -111,8 +113,35 @@ export function generateMap() {
   //TODO
   
   /* Bury treasure!
+   * First, at terrible cost, put the index of every surface cell into an array.
+   * Then pull one at random, if it's too close to a prior selection discard it, and otherwise put a treasure there.
    */
-  //TODO
+  const trv = [];
+  const gv = [];
+  for (let p=w*h; p-->0; ) {
+    if (v[p]) gv.push(p);
+  }
+  for (let i=trc; i-->0; ) {
+    for (;;) {
+      if (gv.length < 1) break; // oops?
+      const gp = Math.floor(Math.random() * gv.length);
+      const vp = gv[gp];
+      gv.splice(vp, 1);
+      const x = vp % w + 0.5;
+      const y = Math.floor(vp / w) + 0.5;
+      let tooClose = false;
+      for (const tr of trv) {
+        const d2 = (tr.x - x) ** 2 + (tr.y - y) ** 2;
+        if (d2 < 10) {
+          tooClose = true;
+          break;
+        }
+      }
+      if (tooClose) continue;
+      trv.push({ x, y });
+      break;
+    }
+  }
   
   /* Put hero at the first island's focus point.
    * Everything's randomish, so this could be any island in the layout, and pretty much anywhere on that island.
@@ -121,5 +150,5 @@ export function generateMap() {
   const herox = islands[0].x;
   const heroy = islands[0].y;
   
-  return {w, h, v, herox, heroy};
+  return {w, h, v, herox, heroy, trv};
 }
