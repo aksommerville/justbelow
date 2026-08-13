@@ -3,6 +3,7 @@
  * {
  *   w,h: int, in cells
  *   v: Uint8Array(w*h)
+ *   herox, heroy
  * }
  * Cell values are tileid in gfx.png.
  */
@@ -113,5 +114,12 @@ export function generateMap() {
    */
   //TODO
   
-  return {w, h, v};
+  /* Put hero at the first island's focus point.
+   * Everything's randomish, so this could be any island in the layout, and pretty much anywhere on that island.
+   * Will never be right on the coast tho.
+   */
+  const herox = islands[0].x;
+  const heroy = islands[0].y;
+  
+  return {w, h, v, herox, heroy};
 }

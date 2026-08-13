@@ -9,22 +9,25 @@ export class Render {
     this.cvs = cvs;
     this.gfx = document.getElementById("gfx");
     
+    /*XXX
     this.herox=0;//XXX
     this.heroy=0;
     this.herodx=0;
     this.herody=0;
+    /**/
   }
   
   render() {
     const ctx = this.cvs.getContext("2d");
     
+    const hero = this.app.sprites[0];//TODO better hero identification. And what's our default if she vanishes?
+    
     /* Determine camera position, in world pixels.
      */
     let cx = 0;
     let cy = 0;
-    cx = (this.herox*TS - (this.cvs.width * 0.5));
-    cy = (this.heroy*TS - (this.cvs.height * 0.5));
-    // TODO Center on the hero sprite, then clamp to the world. Or should we let her sail out to infinity?
+    cx = (hero.x*TS - (this.cvs.width * 0.5));
+    cy = (hero.y*TS - (this.cvs.height * 0.5));
     const xlim = this.app.map.w * TS - this.cvs.width;
     const ylim = this.app.map.h * TS - this.cvs.height;
     if (cx < 0) cx = 0; else if (cx > xlim) cx = xlim;
@@ -50,6 +53,18 @@ export class Render {
         if (this.app.map.v[p]) srcy = TS;
         ctx.drawImage(this.gfx, srcx, srcy, TS, TS, dstx, dsty, TS, TS);
       }
+    }
+    
+    /* Then sprites, if in range.
+     */
+    const xlo=-TS, xhi=this.cvs.width+TS, ylo=-TS, yhi=this.cvs.height+TS;
+    for (const sprite of this.app.sprites) {
+      const x = Math.round(sprite.x * TS - cx);
+      if ((x < xlo) || (x > xhi)) continue;
+      const y = Math.round(sprite.y * TS - cy);
+      if ((y < ylo) || (y > yhi)) continue;
+      const srcx=0, srcy=128;//TODO
+      ctx.drawImage(this.gfx, srcx, srcy, TS, TS, x-(TS>>1), y-(TS>>1), TS, TS);
     }
   }
   

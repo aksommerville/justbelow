@@ -50,6 +50,9 @@ For js13k 2026, theme "UNICORNS AND RAINBOWS".
 - No persistence. Keep it short enough to play in one sitting. And being randomly generated, scores won't be comparable so don't bother.
 - [ ] Configurable complexity?
 - [ ] Continuous or discrete motion? Continuous always feels nicer, but it makes grid-quantized digging a little awkward.
+- [x] Does anything else in the world behave? Thinking, do we need a concept of sprite controllers, or can we just treat the hero as a one-off kind of thing?
+- - Bomb and the unoccupied Boat are sprites.
+- - Generalize.
 
 ## Agenda
 
@@ -59,6 +62,9 @@ For js13k 2026, theme "UNICORNS AND RAINBOWS".
 - [ ] 4. Restore all those features and bulk out further, for the Deluxe CD-ROM edition.
 
 ## TODO
+
+- [x] Minified build is not taking keyboard input.
+- - Due to bug in egg's minifier. Workaround: Don't mask variable names with a lambda parameter. Use unique names always.
 
 - [ ] Phase One.
 - - [x] Initial scaffolding. Serve and build.
@@ -77,8 +83,8 @@ For js13k 2026, theme "UNICORNS AND RAINBOWS".
 - - [ ] Hello and Gameover.
 - - [ ] Gamepad.
 - [ ] Phase Two.
-- - [ ] Minify.
-- - [ ] Zip and report size during build.
+- - [x] Minify.
+- - [x] Zip and report size during build.
 - - [ ] Optimize PNG.
 - [ ] Phase Three.
 - - [ ] Record the pre-squeeze commit, so we can return there for the Deluxe CD-ROM Edition.
