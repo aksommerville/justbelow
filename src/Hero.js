@@ -32,6 +32,39 @@ export class Hero {
     // Quantized active position. Only updates while shovel equipped.
     this.iqx = 0;
     this.iqy = 0;
+    
+    // Null when on foot, otherwise the Boat sprite that we're riding.
+    this.boat = null;
+  }
+  
+  /* Physics.
+   ***************************************************************************/
+  
+  // If a collision exists, escape it along (corx,cory) and return true.
+  // (0,0) to only test collisions.
+  rectify(corx, cory) {
+    const r = 0.480; // Hoping to dodge the need for off-axis correction by making us a little smaller than a meter.
+    const slop = 0.001; // Wee overcorrection, necessary to prevent toe stubs.
+    const ww=this.app.map.w, wh=this.app.map.h;
+    let cola = Math.floor(this.x-r); if (cola < 0) cola = 0;
+    let colz = Math.floor(this.x+r); if (colz >= ww) colz = ww-1;
+    let rowa = Math.floor(this.y-r); if (rowa < 0) rowa = 0;
+    let rowz = Math.floor(this.y+r); if (rowz >= wh) rowz = wh-1;
+    for (let col=cola; col<=colz; col++) {
+      for (let row=rowa; row<=rowz; row++) {
+        const tl = this.app.map.v[row*ww+col];
+        const hard = this.boat ? tl : (tl < 0x10);
+        if (hard) {
+          // The first collision wins. Hopefully she's not moving by more than one meter at a time!
+               if (corx < 0) this.x = col - r - slop;
+          else if (corx > 0) this.x = col + 1 + r + slop;
+          else if (cory < 0) this.y = row - r - slop;
+          else if (cory > 0) this.y = row + 1 + r + slop;
+          return 1;
+        }
+      }
+    }
+    return 0;
   }
   
   /* Update.
@@ -69,8 +102,14 @@ export class Hero {
     }
     if (dx || dy) {
       const speed = 6.000; // m/s
-      this.x += speed * dx * el;
-      this.y += speed * dy * el;
+      if (dx) {
+        this.x += speed * dx * el;
+        this.rectify(-dx, 0);
+      }
+      if (dy) {
+        this.y += speed * dy * el;
+        this.rectify(0, -dy);
+      }
       if (dx && !this.indx) {
         this.fdx = dx;
         this.fdy = 0;
@@ -88,7 +127,6 @@ export class Hero {
       } else if (this.fdy && (this.fdy !== dy)) {
         this.fdy = dy;
       }
-      //TODO collisions
     }
     this.indx = dx;
     this.indy = dy;

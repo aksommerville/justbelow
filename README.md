@@ -70,9 +70,9 @@ For js13k 2026, theme "UNICORNS AND RAINBOWS".
 - [ ] Phase One.
 - - [x] Initial scaffolding. Serve and build.
 - - [x] Map generator.
-- - [ ] Hero sprite.
+- - [x] Hero sprite.
 - - [ ] Boat.
-- - [ ] Inventory.
+- - [x] Inventory.
 - - [ ] Treasure detectors.
 - - [ ] Digging.
 - - [ ] Progress and completion.
