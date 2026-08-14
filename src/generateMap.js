@@ -107,16 +107,55 @@ export function generateMap() {
     dilate(v, vb, w, h);
   }
   
-  /* TODO Can we guarantee:
-   *  1. The outer edge is all water.
-   *  2. No water exists inside an island.
-   *  3. Islands are spaced by at least two meters of water.
-   * Point 1 I believe already is guaranteed. (and if not, it's super easy to do)
-   * Points 2 and 3 are important for placing the Boat.
-   * They're usually true today but I'm pretty sure they're not guaranteed.
-   * We could validate Point 2 with a buffer and two sweeps. Would leave any interior water unmarked, and we could turn those into land.
-   * Point 3 is tricky. Might be better to ignore it and let it be the Boat's problem.
+  /* Dilation won't touch the edges, but it might be possible for the drunk-walk to.
+   * (it depends on the config, and I keep tweaking those dials).
+   * For safety's sake, force the world's edge to water.
+   * Boat placement depends on this.
    */
+  for (let i=0; i<w; i++) {
+    v[i] = 0;
+    v[v.length - i - 1] = 0;
+  }
+  for (let i=0, p=0; i<h; i++, p+=w) {
+    v[p] = 0;
+    v[p+w-1] = 0;
+  }
+  
+  /* Eliminate any water enclaves inside any island.
+   * Important to do this because otherwise the boat might spawn in a pond and be unusable.
+   * (tho ponds are pretty rare to begin with).
+   * We'll do two self-referencing sweeps of the map. One forward, one backward.
+   * Record in (vb) which cells are connected by cardinal water neighbors to (0,0) (which is necessarily The Ocean).
+   * ...actually, need to do those two sweeps repeatedly until they run clean.
+   * Then any remaining water which is not marked in (vb) is a pond and must be drained.
+   */
+  vb.fill(0);
+  vb[0] = 1; // Cell (0,0) is the ocean. Find the rest by connection to it.
+  for (;;) { // Got to keep running until nothing fills. Deep narrow bays can cause trouble for this algorithm.
+    let fl = 0;
+    for (let y=0, p=0; y<h; y++) {
+      for (let x=0; x<w; x++, p++) {
+        if (v[p]) continue; // Not water, skip it.
+        if (vb[p]) continue; // Been here.
+        if (x && vb[p-1]) fl = vb[p] = 1;
+        else if (y && vb[p-w]) fl = vb[p] = 1;
+      }
+    }
+    for (let y=h, p=v.length-1; y-->0; ) {
+      for (let x=w; x-->0; p--) {
+        if (v[p]) continue; // Not water, skip it.
+        if (vb[p]) continue; // Been here.
+        if ((x<w-1) && vb[p+1]) fl = vb[p] = 1;
+        else if ((y<h-1) && vb[p+w]) fl = vb[p] = 1;
+      }
+    }
+    if (!fl) break;
+  }
+  for (let i=v.length; i-->0; ) {
+    if (!v[i] && !vb[i]) {
+      v[i] = 0x10;
+    }
+  }
   
   /* Add grass, rocks, and trees to each island's interior.
    */
@@ -148,7 +187,7 @@ export function generateMap() {
         }
       }
       if (tooClose) continue;
-      let id = 4; //TODO Pick treasure id. Don't use 1 or 2 like here, because we start with those
+      let id = 4; //TODO Pick treasure id.
       trv.push({ x, y, id });
       break;
     }
@@ -162,37 +201,9 @@ export function generateMap() {
   const heroy = islands[0].y;
   
   /* Pick a starting point for the boat.
-   * Very important that this be on the same island as the hero!
-   * Any water cell adjacent to a land cell with a path to the hero is a candidate.
-   *  - Start at the hero's position.
-   *  - Stab westward until we hit water -- found one candidate.
-   *  - Trace the coastline clockwise from there until we reach the start or give up.
-   *
-   * XXX Actually, nuts to all this. Just pick a cardinal direction at random, and put the boat at the nearest water that way.
-  let bx=herox, by=heroy;
-  while ((bx > 0) && v[by*w+bx]) bx--;
-  let bp = by * w + bx;
-  let canv = [bp];
-  for (let i=100; i-->0; ) { // Stop after 100 candidates, even if more are available. This naive algorithm can get trapped.
-    /* Any water one step deasil of a land neighbor (cardinal or diagonal) is a candidate.
-     * Collect them all and select randomly, even though there should almost always be just one candidate.
-     * We might get stuck in a narrow bay, and we're not tracking which of the two coastlines is in play.
-     * Counting on randomness to break us out of those, or ultimately, the iteration limit.
-     * (fwiw narrow bays are pretty unlikely, due to dilation).
-     * Do permit revisiting cells we've visited before, only way out of a narrow bay, but don't record them a second time.
-     *
-    const nv = [];
-    ...
-  }
-  bp = canv[Math.floor(Math.random() * canv.length)];
-  /*TODO Validate that a land path exists from the hero to any cardinal neighbor of (bp).
-   * See above, if we can guarantee that islands be spaced by at least two meters, we don't need this.
-   * But it might be easier to validate the path here, they're both tricky problems.
-   * If (bp) is not valid, use (canv[0]) instead -- it is guaranteed valid.
-   *
-  bx = bp % w;
-  by = Math.floor(bp / w);
-  /**/
+   * I'm cheesing this hard: It's the first water cell in a random cardinal direction from the hero.
+   * We depend on islands being off the edge, and having no interior water.
+   */
   let bx=herox, by=heroy, dx=0, dy=0;
   switch ((Math.random()*4)&3) {
     case 0: dx=-1; break;

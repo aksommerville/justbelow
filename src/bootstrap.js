@@ -73,7 +73,6 @@ class App {
      */
     if (this.map.trv.find(t => !t.got)) return 0;
     
-    console.log(`App.checkCompletion`);
     this.term = true; // XXX Probably don't want to kill the whole app here. Let music play during gameover, maybe animation, and let them start over.
     this.win = true;
     this.render.renderWin();

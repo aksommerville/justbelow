@@ -101,7 +101,6 @@ export class Render {
   }
   
   renderWin() {
-    console.log(`Render.renderWin`);
     const ctx = this.cvs.getContext("2d");
     ctx.fillStyle = "#000";
     ctx.fillRect(0, 0, this.cvs.width, this.cvs.height);

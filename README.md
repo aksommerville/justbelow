@@ -79,7 +79,7 @@ For js13k 2026, theme "UNICORNS AND RAINBOWS".
 - - [x] Confirm I can repro before changing anything. Attack the shore diagonally.
 - - - Takes a few tries but yes seems pretty reliable.
 - - Widen the boat's test radius anyway, to be on the safe side.
-- [ ] Compass is too powerful; it makes the wand useless. And the wand is important, otherwise we got no rainbows. What if Compass only works on the boat? Or blacks out within some minimum distance?
+- [x] Compass is too powerful; it makes the wand useless. And the wand is important, otherwise we got no rainbows. What if Compass only works on the boat? Or blacks out within some minimum distance?
 - - Make it only work in the Boat.
 - - Also, make a second set of non-selectable inventory. Compass should just always be on, once you get it.
 
@@ -101,7 +101,7 @@ For js13k 2026, theme "UNICORNS AND RAINBOWS".
 - - [ ] Caves.
 - - [x] Hello and Gameover. Actually for js13k, we might skip Hello.
 - - [x] Gamepad.
-- - [ ] `generateMap.js`: Eliminate interior water. See notes.
+- - [x] `generateMap.js`: Eliminate interior water. See notes.
 - [ ] Phase Two.
 - - [x] Minify.
 - - [x] Zip and report size during build.
@@ -110,6 +110,8 @@ For js13k 2026, theme "UNICORNS AND RAINBOWS".
 - [ ] Phase Three.
 - - [ ] Record the pre-squeeze commit, so we can return there for the Deluxe CD-ROM Edition.
 - - [ ] Squeeze.
+- - - [ ] I bet we can reduce the JS size considerably by preferring globals over class members.
+- - - [ ] For that matter, don't use classes.
 - - [ ] js13k submission.
 - [ ] Phase Four.
 - - [ ] Deluxe CD-ROM Edition.

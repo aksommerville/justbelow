@@ -216,8 +216,11 @@ export class Hero {
      */
     switch (this.app.overlay.getItem()?.id) {
       case 2: this.updateShovel(el); break;
-      case 3: this.updateCompass(el); break;
     }
+    
+    /* Passive item maintenance.
+     */
+    this.updateCompass(el);
   }
   
   /* Item dispatch.
@@ -306,12 +309,13 @@ export class Hero {
   }
   
   /* Compass.
-   * Entirely passive. Just points toward the nearest treasure at all times.
+   * Entirely passive. Just points toward the nearest treasure at all times, when sailing.
    ***************************************************************************/
    
   updateCompass(el) {
     this.cmps = null;
-    //TODO Needs some watering down. Either ignore treasures too close, or only display when on the boat, or maybe both? Or something else?
+    if (!this.boat) return;
+    if (!this.app.overlay.hasItem(3)) return;
     const tr = this.nearestTreasure(500);
     if (!tr) return;
     this.cmps = Math.atan2(tr.y - this.y, tr.x - this.x);
@@ -358,17 +362,20 @@ export class Hero {
           ctx.strokeStyle = "#0f0";
           ctx.stroke();
         } break;
-      case 3: if (this.cmps !== null) { // Compass: Highlight one direction.
-          // Tile 0x88. Trim 1 pixel top and left, and 2 pixels right and bottom.
-          const sx=129, sy=129, w=13, r=16;
-          const cx = x + r * Math.cos(this.cmps);
-          const cy = y + r * Math.sin(this.cmps);
-          ctx.save();
-          ctx.translate(cx, cy);
-          ctx.rotate(this.cmps);
-          ctx.drawImage(this.app.render.gfx, sx, sy, w, w, w*-0.4, w*-0.4, w*0.8, w*0.8);
-          ctx.restore();
-        } break;
+    }
+    
+    /* Compass.
+     */
+    if (this.cmps !== null) { // Compass: Highlight one direction.
+      // Tile 0x88. Trim 1 pixel top and left, and 2 pixels right and bottom.
+      const sx=129, sy=129, w=13, r=16;
+      const cx = x + r * Math.cos(this.cmps);
+      const cy = y + r * Math.sin(this.cmps);
+      ctx.save();
+      ctx.translate(cx, cy);
+      ctx.rotate(this.cmps);
+      ctx.drawImage(this.app.render.gfx, sx, sy, w, w, w*-0.4, w*-0.4, w*0.8, w*0.8);
+      ctx.restore();
     }
     
     /* Draw my principal frame.
