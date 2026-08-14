@@ -3,6 +3,7 @@ import { generateMap } from "./generateMap.js";
 import { K, Input } from "./Input.js";
 import { Hero } from "./Hero.js";
 import { Overlay } from "./Overlay.js";
+import { Boat } from "./Boat.js";
 
 /* App is the top level of our code. Anything above is straight boilerplate.
  */
@@ -18,11 +19,15 @@ class App {
     this.map = generateMap();
     this.sprites = [];
     
-    //TODO sprite controllers
     this.sprites.push(new Hero(
       this,
       this.map.herox+0.5,
       this.map.heroy+0.5
+    ));
+    this.sprites.push(new Boat(
+      this,
+      this.map.bx+0.5,
+      this.map.by+0.5
     ));
   }
   

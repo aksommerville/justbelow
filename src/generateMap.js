@@ -5,6 +5,7 @@
  *   v: Uint8Array(w*h)
  *   herox, heroy,
  *   trv: {x,y}[],
+ *   bx, by, // Boat
  * }
  * Cell values are tileid in gfx.png.
  */
@@ -35,7 +36,6 @@ export function generateMap() {
   /* TODO Size of world.
    * Maybe this should be configurable.
    */
-  //XXX Starting with world map the size of the framebuffer, so I can preview it one pixel per tile. No reason to use these bounds in real life.
   const w = 480;
   const h = 270;
   const islc = 10;
@@ -70,7 +70,6 @@ export function generateMap() {
     });
     v[y * w + x] = 16;
   }
-  console.log(`island seeds in ${w}x${h} world: ${JSON.stringify(islands)}`);
   
   /* Drunk-walk by cardinal steps from each seed to make a more interesting shape.
    * It's ok to stop early.
@@ -107,6 +106,17 @@ export function generateMap() {
     dilate(vb, v, w, h);
     dilate(v, vb, w, h);
   }
+  
+  /* TODO Can we guarantee:
+   *  1. The outer edge is all water.
+   *  2. No water exists inside an island.
+   *  3. Islands are spaced by at least two meters of water.
+   * Point 1 I believe already is guaranteed. (and if not, it's super easy to do)
+   * Points 2 and 3 are important for placing the Boat.
+   * They're usually true today but I'm pretty sure they're not guaranteed.
+   * We could validate Point 2 with a buffer and two sweeps. Would leave any interior water unmarked, and we could turn those into land.
+   * Point 3 is tricky. Might be better to ignore it and let it be the Boat's problem.
+   */
   
   /* Add grass, rocks, and trees to each island's interior.
    */
@@ -150,5 +160,49 @@ export function generateMap() {
   const herox = islands[0].x;
   const heroy = islands[0].y;
   
-  return {w, h, v, herox, heroy, trv};
+  /* Pick a starting point for the boat.
+   * Very important that this be on the same island as the hero!
+   * Any water cell adjacent to a land cell with a path to the hero is a candidate.
+   *  - Start at the hero's position.
+   *  - Stab westward until we hit water -- found one candidate.
+   *  - Trace the coastline clockwise from there until we reach the start or give up.
+   *
+   * XXX Actually, nuts to all this. Just pick a cardinal direction at random, and put the boat at the nearest water that way.
+  let bx=herox, by=heroy;
+  while ((bx > 0) && v[by*w+bx]) bx--;
+  let bp = by * w + bx;
+  let canv = [bp];
+  for (let i=100; i-->0; ) { // Stop after 100 candidates, even if more are available. This naive algorithm can get trapped.
+    /* Any water one step deasil of a land neighbor (cardinal or diagonal) is a candidate.
+     * Collect them all and select randomly, even though there should almost always be just one candidate.
+     * We might get stuck in a narrow bay, and we're not tracking which of the two coastlines is in play.
+     * Counting on randomness to break us out of those, or ultimately, the iteration limit.
+     * (fwiw narrow bays are pretty unlikely, due to dilation).
+     * Do permit revisiting cells we've visited before, only way out of a narrow bay, but don't record them a second time.
+     *
+    const nv = [];
+    ...
+  }
+  bp = canv[Math.floor(Math.random() * canv.length)];
+  /*TODO Validate that a land path exists from the hero to any cardinal neighbor of (bp).
+   * See above, if we can guarantee that islands be spaced by at least two meters, we don't need this.
+   * But it might be easier to validate the path here, they're both tricky problems.
+   * If (bp) is not valid, use (canv[0]) instead -- it is guaranteed valid.
+   *
+  bx = bp % w;
+  by = Math.floor(bp / w);
+  /**/
+  let bx=herox, by=heroy, dx=0, dy=0;
+  switch ((Math.random()*4)&3) {
+    case 0: dx=-1; break;
+    case 1: dx=1; break;
+    case 2: dy=-1; break;
+    case 3: dy=1; break;
+  }
+  while (v[by*w+bx]) {
+    bx += dx;
+    by += dy;
+  }
+  
+  return {w, h, v, herox, heroy, trv, bx, by};
 }

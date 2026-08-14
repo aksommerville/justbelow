@@ -4,6 +4,7 @@
  
 import { K } from "./Input.js";
 import { TS } from "./Render.js";
+import { Boat } from "./Boat.js";
  
 export class Hero {
   constructor(app, x, y) {
@@ -35,6 +36,9 @@ export class Hero {
     
     // Null when on foot, otherwise the Boat sprite that we're riding.
     this.boat = null;
+    
+    // Brief motion blackout. Counts down after boarding or deboarding the boat.
+    this.mbl = 0;
   }
   
   /* Physics.
@@ -64,7 +68,58 @@ export class Hero {
         }
       }
     }
+    // TODO Should we check world edges when in the boat? Anything OOB is effectively water, which the boat can travel on.
     return 0;
+  }
+  
+  /* Bumped something solid.
+   * Check for boat enter/exit.
+   ****************************************************************************/
+   
+  bump() {
+    // Focus on a point one meter in our face direction. Note that we don't care which way she moved, only which way she's looking.
+    const x = this.x + this.fdx;
+    const y = this.y + this.fdy;
+    
+    /* In the boat:
+     * If we're focussed on a land cell, exit the boat and put us in the center of that cell.
+     * There will be some minor-axis jump usually. I think that's better than landing in a wall and having to sort that out.
+     */
+    if (this.boat) {
+      const qx = Math.floor(x);
+      const qy = Math.floor(y);
+      if ((qx >= 0) && (qy >= 0) && (qx < this.app.map.w) && (qy < this.app.map.h)) {
+        const tl = this.app.map.v[qy * this.app.map.w + qx];
+        if (tl >= 0x10) {
+          this.x = qx + 0.5;
+          this.y = qy + 0.5;
+          this.boat.hero = null;
+          this.boat = null;
+          this.mbl = 0.3;
+          return;
+        }
+      }
+      
+    /* On foot:
+     * If that focus point is within the boat, say with a square half-meter radius, board it.
+     * The boat's position is preserved.
+     */
+    } else {
+      for (const boat of this.app.sprites) {
+        if (boat instanceof Boat) {
+          const dx = x - boat.x;
+          if ((dx < -0.5) || (dx > 0.5)) continue;
+          const dy = y - boat.y;
+          if ((dy < -0.5) || (dy > 0.5)) continue;
+          this.x = boat.x;
+          this.y = boat.y;
+          this.boat = boat;
+          boat.hero = this;
+          this.mbl = 0.3;
+          return;
+        }
+      }
+    }
   }
   
   /* Update.
@@ -90,7 +145,9 @@ export class Hero {
     /* Poll dpad, and walk if nonzero.
      */
     let dx=0, dy=0;
-    if (!this.app.overlay.enabled) {
+    if (this.mbl > 0) {
+      this.mbl -= el;
+    } else if (!this.app.overlay.enabled) {
       switch (this.app.input.state & (K.LEFT | K.RIGHT)) {
         case K.LEFT: dx = -1; break;
         case K.RIGHT: dx = 1; break;
@@ -101,15 +158,6 @@ export class Hero {
       }
     }
     if (dx || dy) {
-      const speed = 6.000; // m/s
-      if (dx) {
-        this.x += speed * dx * el;
-        this.rectify(-dx, 0);
-      }
-      if (dy) {
-        this.y += speed * dy * el;
-        this.rectify(0, -dy);
-      }
       if (dx && !this.indx) {
         this.fdx = dx;
         this.fdy = 0;
@@ -126,6 +174,19 @@ export class Hero {
         this.fdx = dx;
       } else if (this.fdy && (this.fdy !== dy)) {
         this.fdy = dy;
+      }
+      const speed = this.boat ? 10.0 : 6.0; // m/s
+      if (dx) {
+        this.x += speed * dx * el;
+        if (this.rectify(-dx, 0)) this.bump();
+      }
+      if (dy) {
+        this.y += speed * dy * el;
+        if (this.rectify(0, -dy)) this.bump();
+      }
+      if (this.boat) {
+        this.boat.x = this.x;
+        this.boat.y = this.y;
       }
     }
     this.indx = dx;
@@ -186,7 +247,8 @@ export class Hero {
     if ((this.iqx < 0) || (this.iqx >= this.app.map.w)) return;
     if ((this.iqy < 0) || (this.iqy >= this.app.map.h)) return;
     // Only plain sand is diggable, reject all else. (esp including dug holes).
-    if (this.app.map.v[this.iqy * this.app.map.w + this.iqx] !== 0x10) {
+    // Also, no digging in a boat, that doesn't even make sense.
+    if (this.boat || (this.app.map.v[this.iqy * this.app.map.w + this.iqx] !== 0x10)) {
       console.log(`can't dig here (${this.iqx},${this.iqy})`);//TODO friendly rejection
       return;
     }
@@ -248,7 +310,7 @@ export class Hero {
      */
     const item = this.app.overlay.getItem();
     switch (item?.id) {
-      case 2: { // Shovel: Quantization indicator.
+      case 2: if (!this.boat) { // Shovel: Quantization indicator. Hide if in boat, it's not relevant then.
           const x0 = Math.round(this.iqx * TS + offx) + 0.5;
           const y0 = Math.round(this.iqy * TS + offy) + 0.5;
           ctx.beginPath();
@@ -263,14 +325,17 @@ export class Hero {
     }
     
     /* Draw my principal frame.
+     * If we're riding the boat, it does the rendering.
      */
-    let ti = 0x80;
-    if (this.fdx < 0) ti += 2;
-    else if (this.fdx > 0) ti += 3;
-    else if (this.fdy < 0) ti += 1;
-    const srcx = (ti & 15) * TS;
-    const srcy = (ti >> 4) * TS;
-    ctx.drawImage(this.app.render.gfx, srcx, srcy, TS, TS, x-(TS>>1), y-(TS>>1), TS, TS);
+    if (!this.boat) {
+      let ti = 0x80;
+      if (this.fdx < 0) ti += 2;
+      else if (this.fdx > 0) ti += 3;
+      else if (this.fdy < 0) ti += 1;
+      const srcx = (ti & 15) * TS;
+      const srcy = (ti >> 4) * TS;
+      ctx.drawImage(this.app.render.gfx, srcx, srcy, TS, TS, x-(TS>>1), y-(TS>>1), TS, TS);
+    }
     
     // Anything else for items? We're not displaying them in hand, to keep things simple.
     

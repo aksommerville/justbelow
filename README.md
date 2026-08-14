@@ -46,10 +46,10 @@ For js13k 2026, theme "UNICORNS AND RAINBOWS".
 - - [x] Should we make one map per island, and not record anything for the vast waters between?
 - - - NO. Don't need the extra complication, and memory is cheap.
 - - I want caves too. So there's outer world and multiple inner maps.
-- [ ] Framebuffer size? Sprite size?
+- [x] Framebuffer size? Sprite size? ...240x135 and 16x16. Can freely adjust the framebuffer size in index.html.
 - No persistence. Keep it short enough to play in one sitting. And being randomly generated, scores won't be comparable so don't bother.
-- [ ] Configurable complexity?
-- [ ] Continuous or discrete motion? Continuous always feels nicer, but it makes grid-quantized digging a little awkward.
+- [x] Configurable complexity? ...hard no for js13k. Yes for CD-ROM Edition.
+- [x] Continuous or discrete motion? Continuous always feels nicer, but it makes grid-quantized digging a little awkward. ...continuous
 - [x] Does anything else in the world behave? Thinking, do we need a concept of sprite controllers, or can we just treat the hero as a one-off kind of thing?
 - - Bomb and the unoccupied Boat are sprites.
 - - Generalize.
@@ -71,24 +71,31 @@ For js13k 2026, theme "UNICORNS AND RAINBOWS".
 - - [x] Initial scaffolding. Serve and build.
 - - [x] Map generator.
 - - [x] Hero sprite.
-- - [ ] Boat.
+- - [x] Boat.
 - - [x] Inventory.
 - - [ ] Treasure detectors.
+- - [ ] Compass.
+- - [ ] Map.
 - - [ ] Digging.
 - - [ ] Progress and completion.
 - - [ ] Sound effects.
-- - [ ] Music.
+- - [ ] Music. Voice mp3 in Logic as I usually do, but do it good: That will go in the CD-ROM Edition. Probly the single biggest driver of bulk.
 - - [ ] Machete.
 - - [ ] Bomb.
 - - [ ] Caves.
-- - [ ] Hello and Gameover.
+- - [ ] Hello and Gameover. Actually for js13k, we might skip Hello.
 - - [ ] Gamepad.
+- - [ ] `generateMap.js`: Eliminate interior water. See notes.
 - [ ] Phase Two.
 - - [x] Minify.
 - - [x] Zip and report size during build.
 - - [ ] Optimize PNG.
+- - [ ] Conditionalize js. Can we pass it thru cpp first? I want at the text level to go like `if js13k ...text... else if cdrom ...text... end`, and have that handled before minification.
 - [ ] Phase Three.
 - - [ ] Record the pre-squeeze commit, so we can return there for the Deluxe CD-ROM Edition.
 - - [ ] Squeeze.
+- - [ ] js13k submission.
 - [ ] Phase Four.
 - - [ ] Deluxe CD-ROM Edition.
+- - [ ] Rich tiles. Neighbor joining etc.
+- - [ ] mp3 music instead of synth.
