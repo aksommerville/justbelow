@@ -62,6 +62,9 @@ For js13k 2026, theme "UNICORNS AND RAINBOWS".
 - [ ] 3. Optimize manually and eliminate features until it fits. That's our js13k release. Aim to complete by 5 Sept.
 - [ ] 4. Restore all those features and bulk out further, for the Deluxe CD-ROM edition.
 
+2026-08-14: Second day, and I'm almost done Phase One. But I want a firmer build pipeline before implementing audio, since there will necessarily be some conversion involved.
+  So, will finish Phase Two before Phase One.
+
 ## TODO
 
 - [x] Minified build is not taking keyboard input.
@@ -97,7 +100,7 @@ For js13k 2026, theme "UNICORNS AND RAINBOWS".
 - - [ ] Bomb.
 - - [ ] Caves.
 - - [x] Hello and Gameover. Actually for js13k, we might skip Hello.
-- - [ ] Gamepad.
+- - [x] Gamepad.
 - - [ ] `generateMap.js`: Eliminate interior water. See notes.
 - [ ] Phase Two.
 - - [x] Minify.
