@@ -1,6 +1,8 @@
 /* Render.js
  */
  
+import { Hero } from "./Hero.js";
+ 
 export const TS = 16;
  
 export class Render {
@@ -8,19 +10,12 @@ export class Render {
     this.app = app;
     this.cvs = cvs;
     this.gfx = document.getElementById("gfx");
-    
-    /*XXX
-    this.herox=0;//XXX
-    this.heroy=0;
-    this.herodx=0;
-    this.herody=0;
-    /**/
   }
   
   render() {
     const ctx = this.cvs.getContext("2d");
     
-    const hero = this.app.sprites[0];//TODO better hero identification. And what's our default if she vanishes?
+    const hero = this.app.sprites.find(s => s instanceof Hero);
     
     /* Determine camera position, in world pixels.
      * Round initially, then again at the end. Without the first one, there can be some hero jitter with odd dimensions.
@@ -82,5 +77,35 @@ export class Render {
     const ctx = this.cvs.getContext("2d");
     ctx.fillStyle = "#000";
     ctx.fillRect(0, 0, this.cvs.width, this.cvs.height);
+  }
+  
+  text(ctx, x, y, t) {
+    if (!t) return 0;
+    const x0 = x;
+    for (let i=0; i<t.length; i++) {
+      let ch = t.charCodeAt(i);
+      if (ch >= 0x60) ch -= 0x20; // Turn uppercase to lowercase (and mangle some punctuation we don't care about).
+      if (ch <= 0x20) {
+        // All C0 counts as space. Narrower than a glyph.
+        x += 2;
+      } else if (ch > 0x5f) {
+        // Illegal codepoint. Skip it and don't output anything.
+      } else {
+        const srcx = (ch & 15) * 3;
+        const srcy = 95 + ((ch >> 4) - 2) * 5;
+        ctx.drawImage(this.gfx, srcx, srcy, 3, 5, x, y, 3, 5);
+        x += 4;
+      }
+    }
+    return x - x0;
+  }
+  
+  renderWin() {
+    console.log(`Render.renderWin`);
+    const ctx = this.cvs.getContext("2d");
+    ctx.fillStyle = "#000";
+    ctx.fillRect(0, 0, this.cvs.width, this.cvs.height);
+    this.text(ctx, (this.cvs.width >> 1) - 15, (this.cvs.height >> 1) - 2, "You win!");
+    //TODO Unicorn skeleton, credits, time elapsed?
   }
 }

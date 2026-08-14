@@ -40,7 +40,7 @@ export function generateMap() {
   const h = 270;
   const islc = 10;
   const islspc = 40;
-  const trc = 20;
+  const trc = 2;//20;
   const v = new Uint8Array(w * h);
   
   /* Seed the initial islands.

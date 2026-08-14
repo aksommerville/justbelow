@@ -66,8 +66,15 @@ For js13k 2026, theme "UNICORNS AND RAINBOWS".
 - [x] Minified build is not taking keyboard input.
 - - Due to bug in egg's minifier. Workaround: Don't mask variable names with a lambda parameter. Use unique names always.
 - [ ] Need to ensure that there's treasure on whichever island you start on, otherwise user will be confused.
-- [ ] Is it possible to unboat in such a way that you can't get back on? Test the edges.
+- [x] Is it possible to unboat in such a way that you can't get back on? Test the edges.
 - - YES. I'm not able to repro on demand but it did happen by accident. Calculate the exact edges and fuzz boat's radius beyond them.
+- - Boat at 141.833,135.481. Diagonalish to land at 142,134.
+- - [x] How did we even get off this boat? When checking for land, it should have checked 141,134 and 142,135, which are both water.
+- - - I bet it's because we have two calls to `bump()`, one per axis. ...wrong. The first bump comes before the second motion. Both see valid positions.
+- - - It's because we update Boat's position after the bump handling -- it doesn't get the final update.
+- - [x] Confirm I can repro before changing anything. Attack the shore diagonally.
+- - - Takes a few tries but yes seems pretty reliable.
+- - Widen the boat's test radius anyway, to be on the safe side.
 - [ ] Compass is too powerful; it makes the wand useless. And the wand is important, otherwise we got no rainbows. What if Compass only works on the boat? Or blacks out within some minimum distance?
 
 - [ ] Phase One.
@@ -76,17 +83,17 @@ For js13k 2026, theme "UNICORNS AND RAINBOWS".
 - - [x] Hero sprite.
 - - [x] Boat.
 - - [x] Inventory.
-- - [ ] Treasure detectors.
+- - [x] Treasure detectors. Just Wand and Compass, I think that's all we need for js13k.
 - - [x] Compass.
 - - [ ] Map.
-- - [ ] Digging.
-- - [ ] Progress and completion.
+- - [x] Digging.
+- - [x] Progress and completion.
 - - [ ] Sound effects.
 - - [ ] Music. Voice mp3 in Logic as I usually do, but do it good: That will go in the CD-ROM Edition. Probly the single biggest driver of bulk.
 - - [ ] Machete.
 - - [ ] Bomb.
 - - [ ] Caves.
-- - [ ] Hello and Gameover. Actually for js13k, we might skip Hello.
+- - [x] Hello and Gameover. Actually for js13k, we might skip Hello.
 - - [ ] Gamepad.
 - - [ ] `generateMap.js`: Eliminate interior water. See notes.
 - [ ] Phase Two.

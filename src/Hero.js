@@ -94,6 +94,8 @@ export class Hero {
       if ((qx >= 0) && (qy >= 0) && (qx < this.app.map.w) && (qy < this.app.map.h)) {
         const tl = this.app.map.v[qy * this.app.map.w + qx];
         if (tl >= 0x10) {
+          this.boat.x = this.x;
+          this.boat.y = this.y;
           this.x = qx + 0.5;
           this.y = qy + 0.5;
           this.boat.hero = null;
@@ -110,10 +112,11 @@ export class Hero {
     } else {
       for (const boat of this.app.sprites) {
         if (boat instanceof Boat) {
+          const br = 0.6; // A little extra-wide. Shouldn't be necessary but early on, I had some quirky unreachable boats in corner situations.
           const dx = x - boat.x;
-          if ((dx < -0.5) || (dx > 0.5)) continue;
+          if ((dx < -br) || (dx > br)) continue;
           const dy = y - boat.y;
-          if ((dy < -0.5) || (dy > 0.5)) continue;
+          if ((dy < -br) || (dy > br)) continue;
           this.x = boat.x;
           this.y = boat.y;
           this.boat = boat;
@@ -274,6 +277,7 @@ export class Hero {
     if (tr) {
       tr.got = 1;
       console.log(`GOT TREASURE: ${JSON.stringify(tr)}`);//TODO
+      this.app.checkCompletion();
     } else {
       console.log(`no treasure here (${this.iqx},${this.iqy})`);//TODO rejection sound and graphics
     }

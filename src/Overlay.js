@@ -76,5 +76,10 @@ export class Overlay {
       }
       ctx.drawImage(this.app.render.gfx, (item.id-1)*10, 118, 10, 10, dstx, dsty, 10, 10);
     }
+    
+    // Progress indicator on the left side.
+    const trc = this.app.map.trv.reduce((a, v) => a + (v.got ? 1 : 0), 0);
+    const tra = this.app.map.trv.length;
+    this.app.render.text(ctx, 3, 2, `${trc}/${tra}`);
   }
 }

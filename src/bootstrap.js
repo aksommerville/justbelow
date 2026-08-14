@@ -18,6 +18,7 @@ class App {
     this.term = false;
     this.map = generateMap();
     this.sprites = [];
+    this.win = false;
     
     this.sprites.push(new Hero(
       this,
@@ -58,10 +59,26 @@ class App {
       
       for (const sprite of this.sprites) sprite.update?.(el);
       
+      if (this.term && this.win) return; // Don't overwrite the "game over" bit we just drew!
       this.render.render();
     }
     
     this.frame = requestAnimationFrame((_t) => this.update(_t));
+  }
+  
+  checkCompletion() {
+  
+    /* Incomplete if any treasure remains ungot.
+     * TODO Eventually it should be only if a *unicorn bone* remains ungot, not necessarily any treasure.
+     */
+    if (this.map.trv.find(t => !t.got)) return 0;
+    
+    console.log(`App.checkCompletion`);
+    this.term = true; // XXX Probably don't want to kill the whole app here. Let music play during gameover, maybe animation, and let them start over.
+    this.win = true;
+    this.render.renderWin();
+    
+    return 1;
   }
 }
 
