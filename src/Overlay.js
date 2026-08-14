@@ -17,6 +17,10 @@ export class Overlay {
     this.itemp = 0;
   }
   
+  getItem() {
+    return this.items[this.itemp];
+  }
+  
   enable() {
     this.enabled = true;
   }

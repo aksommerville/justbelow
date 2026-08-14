@@ -50,8 +50,8 @@ export class Render {
       for (let col=cola, dstx=cola*TS-cx, p=row*this.app.map.w+cola; col<=colz; col++, dstx+=TS, p++) {
         //TODO quarter tiles
         //TODO tile animation
-        let srcx=0, srcy=0;
-        if (this.app.map.v[p]) srcy = TS;
+        const srcx = (this.app.map.v[p] & 15) * TS;
+        const srcy = (this.app.map.v[p] >> 4) * TS;
         ctx.drawImage(this.gfx, srcx, srcy, TS, TS, dstx, dsty, TS, TS);
       }
     }
