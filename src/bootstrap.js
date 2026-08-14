@@ -80,6 +80,12 @@ class App {
     
     return 1;
   }
+  
+  rmspr(s) {
+    const p = this.sprites.indexOf(s);
+    if (p < 0) return;
+    this.sprites.splice(p, 1);
+  }
 }
 
 /* Bootstrap per browser.

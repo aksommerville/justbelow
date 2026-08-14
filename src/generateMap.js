@@ -40,7 +40,7 @@ export function generateMap() {
   const h = 270;
   const islc = 10;
   const islspc = 40;
-  const trc = 2;//20;
+  const trc = 20;
   const v = new Uint8Array(w * h);
   
   /* Seed the initial islands.
@@ -148,7 +148,8 @@ export function generateMap() {
         }
       }
       if (tooClose) continue;
-      trv.push({ x, y });
+      let id = 4; //TODO Pick treasure id. Don't use 1 or 2 like here, because we start with those
+      trv.push({ x, y, id });
       break;
     }
   }

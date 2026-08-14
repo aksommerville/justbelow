@@ -28,6 +28,7 @@ For js13k 2026, theme "UNICORNS AND RAINBOWS".
 - How about fishing off the boat? Find bones out in the open water too.
 - Deluxe CD-ROM Edition! Just as a gag.
 - - Must be larger than 1.44 MB (otherwise it would be the Deluxe Floppy Disk Edition).
+- - If it tops 5 MB (4816896 exactly), it will be my largest game ever. I'd get a kick out of that.
 - - Ideally larger than 13 MB. But no more than 700 MB, as if that were possible.
 - - Build and measure exactly the same way as the js13k edition, no cheating.
 - - Spurious data not allowed. Everything we include has to be used and has to be reasonable. Again, no cheating.
@@ -76,8 +77,10 @@ For js13k 2026, theme "UNICORNS AND RAINBOWS".
 - - - Takes a few tries but yes seems pretty reliable.
 - - Widen the boat's test radius anyway, to be on the safe side.
 - [ ] Compass is too powerful; it makes the wand useless. And the wand is important, otherwise we got no rainbows. What if Compass only works on the boat? Or blacks out within some minimum distance?
+- - Make it only work in the Boat.
+- - Also, make a second set of non-selectable inventory. Compass should just always be on, once you get it.
 
-- [ ] Phase One.
+- [ ] Phase One. Don't stop until we're *over* 13 kB.
 - - [x] Initial scaffolding. Serve and build.
 - - [x] Map generator.
 - - [x] Hero sprite.

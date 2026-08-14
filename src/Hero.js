@@ -42,6 +42,10 @@ export class Hero {
     
     // Null or radians. Null if no treasure.
     this.cmps = null;
+    
+    // Dig toast.
+    this.tid = 0;
+    this.tttl = 0;
   }
   
   /* Physics.
@@ -198,7 +202,7 @@ export class Hero {
     this.indx = dx;
     this.indy = dy;
     
-    /* Advance rainbow if rainbowing.
+    /* Advance timed things.
      */
     if (this.hlr > 0) {
       this.hlp += el * 1.000;
@@ -206,6 +210,7 @@ export class Hero {
         this.hlr = 0;
       }
     }
+    if (this.tttl > 0) this.tttl -= el;
     
     /* Item maintenance.
      */
@@ -239,7 +244,10 @@ export class Hero {
   
   useWand() {
     const tr = this.nearestTreasure(10);
-    if (!tr) return; // Nothing in range, let any existing rainbow play out.
+    if (!tr) { // Nothing in range, let any existing rainbow play out.
+      this.toast(0);
+      return;
+    }
     this.hlx = tr.x;
     this.hly = tr.y;
     this.hlr = Math.sqrt((tr.x - this.x) ** 2 + (tr.y - this.y) ** 2);
@@ -257,6 +265,7 @@ export class Hero {
     // Also, no digging in a boat, that doesn't even make sense.
     if (this.boat || (this.app.map.v[this.iqy * this.app.map.w + this.iqx] !== 0x10)) {
       console.log(`can't dig here (${this.iqx},${this.iqy})`);//TODO friendly rejection
+      this.toast(0);
       return;
     }
     // Whether there's treasure or not, replace cell with the dug tile.
@@ -277,9 +286,11 @@ export class Hero {
     if (tr) {
       tr.got = 1;
       console.log(`GOT TREASURE: ${JSON.stringify(tr)}`);//TODO
+      this.toast(tr.id);
       this.app.checkCompletion();
     } else {
       console.log(`no treasure here (${this.iqx},${this.iqy})`);//TODO rejection sound and graphics
+      this.toast(0);
     }
   }
   
@@ -287,6 +298,11 @@ export class Hero {
     // Quantized position leads a little in the facing direction.
     this.iqx = Math.floor(this.x + this.fdx * 0.500);
     this.iqy = Math.floor(this.y + (this.fdy ? (this.fdy * 0.500) : 0.250));
+  }
+  
+  toast(id) {
+    this.tid = id;
+    this.tttl = 1.000;
   }
   
   /* Compass.
@@ -369,6 +385,22 @@ export class Hero {
     }
     
     // Anything else for items? We're not displaying them in hand, to keep things simple.
+    
+    // Toast above my head briefly after digging.
+    if (this.tttl > 0) {
+      let ti = this.tid ? 0x8a : 0x89;
+      const srcx = (ti & 15) * TS;
+      const srcy = (ti >> 4) * TS;
+      if (this.tttl < 0.5) ctx.globalAlpha = this.tttl*2;
+      ctx.drawImage(this.app.render.gfx, srcx, srcy, TS, TS, x-(TS>>1), y-TS-(TS>>1), TS, TS);
+      if (this.tid) {
+        ctx.drawImage(this.app.render.gfx, (this.tid-1)*10, 118, 10, 10, x-5, y-TS-5, 10, 10);
+        if ((this.tttl * 10) & 1) {
+          ctx.drawImage(this.app.render.gfx, 176, srcy, TS, TS, x-(TS>>1), y-TS-(TS>>1), TS, TS);
+        }
+      }
+      ctx.globalAlpha = 1;
+    }
     
     // Rainbow if in use.
     if (this.hlr > 0) {
