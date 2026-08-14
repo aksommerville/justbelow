@@ -66,6 +66,9 @@ For js13k 2026, theme "UNICORNS AND RAINBOWS".
 - [x] Minified build is not taking keyboard input.
 - - Due to bug in egg's minifier. Workaround: Don't mask variable names with a lambda parameter. Use unique names always.
 - [ ] Need to ensure that there's treasure on whichever island you start on, otherwise user will be confused.
+- [ ] Is it possible to unboat in such a way that you can't get back on? Test the edges.
+- - YES. I'm not able to repro on demand but it did happen by accident. Calculate the exact edges and fuzz boat's radius beyond them.
+- [ ] Compass is too powerful; it makes the wand useless. And the wand is important, otherwise we got no rainbows. What if Compass only works on the boat? Or blacks out within some minimum distance?
 
 - [ ] Phase One.
 - - [x] Initial scaffolding. Serve and build.
@@ -74,7 +77,7 @@ For js13k 2026, theme "UNICORNS AND RAINBOWS".
 - - [x] Boat.
 - - [x] Inventory.
 - - [ ] Treasure detectors.
-- - [ ] Compass.
+- - [x] Compass.
 - - [ ] Map.
 - - [ ] Digging.
 - - [ ] Progress and completion.

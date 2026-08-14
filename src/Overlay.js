@@ -13,6 +13,8 @@ export class Overlay {
     this.items = [
       { id: 1 }, // Wand.
       { id: 2 }, // Shovel.
+      //TODO These items should be found as treasure. For now, you start with everything:
+      { id: 3 }, // Compass.
     ];
     this.itemp = 0;
   }
