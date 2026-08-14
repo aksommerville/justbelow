@@ -65,6 +65,7 @@ For js13k 2026, theme "UNICORNS AND RAINBOWS".
 
 - [x] Minified build is not taking keyboard input.
 - - Due to bug in egg's minifier. Workaround: Don't mask variable names with a lambda parameter. Use unique names always.
+- [ ] Need to ensure that there's treasure on whichever island you start on, otherwise user will be confused.
 
 - [ ] Phase One.
 - - [x] Initial scaffolding. Serve and build.

@@ -23,11 +23,12 @@ export class Render {
     const hero = this.app.sprites[0];//TODO better hero identification. And what's our default if she vanishes?
     
     /* Determine camera position, in world pixels.
+     * Round initially, then again at the end. Without the first one, there can be some hero jitter with odd dimensions.
      */
     let cx = 0;
     let cy = 0;
-    cx = (hero.x*TS - (this.cvs.width * 0.5));
-    cy = (hero.y*TS - (this.cvs.height * 0.5));
+    cx = Math.round(hero.x*TS) - (this.cvs.width * 0.5);
+    cy = Math.round(hero.y*TS) - (this.cvs.height * 0.5);
     const xlim = this.app.map.w * TS - this.cvs.width;
     const ylim = this.app.map.h * TS - this.cvs.height;
     if (cx < 0) cx = 0; else if (cx > xlim) cx = xlim;
@@ -71,6 +72,10 @@ export class Render {
         ctx.drawImage(this.gfx, srcx, srcy, TS, TS, x-(TS>>1), y-(TS>>1), TS, TS);
       }
     }
+    
+    /* Lastly the overlay.
+     */
+    this.app.overlay.render(ctx);
   }
   
   quit() {

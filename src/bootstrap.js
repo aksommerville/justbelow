@@ -2,6 +2,7 @@ import { Render } from "./Render.js";
 import { generateMap } from "./generateMap.js";
 import { K, Input } from "./Input.js";
 import { Hero } from "./Hero.js";
+import { Overlay } from "./Overlay.js";
 
 /* App is the top level of our code. Anything above is straight boilerplate.
  */
@@ -10,6 +11,7 @@ class App {
     this.cvs = document.getElementById("c");
     this.render = new Render(this, this.cvs);
     this.input = new Input(this);
+    this.overlay = new Overlay(this);
     this.updt = 0;
     this.frame = requestAnimationFrame((t) => this.update(t));
     this.term = false;
@@ -41,6 +43,7 @@ class App {
       this.updt = t;
       el /= 1000;
       this.input.update(el);
+      this.overlay.update(el);
       
       if (this.input.state & K.QUIT) {
         this.render.quit();
