@@ -3,31 +3,85 @@ all:
 .SECONDARY:
 PRECMD=echo "  $@" ; mkdir -p $(@D) ;
 
+ifeq ($(MAKECMDGOALS),clean)
+
+clean:;rm -rf mid out src/js13k/*.bs
+
+else
+
 # We use my general games platform `egg` for its minifier.
+# Also it gives us the general toolchain config, just a convenience.
 # https://github.com/aksommerville/egg2
 ifeq (,$(EGG_SDK))
   EGG_SDK:=../egg2
 endif
+include $(EGG_SDK)/local/config.mk
+CC:=$($(EGG_NATIVE_TARGET)_CC) -I$(EGG_SDK)/src
+LD:=$($(EGG_NATIVE_TARGET)_LD)
+LDPOST:=$($(EGG_NATIVE_TARGET)_LDPOST) $(EGG_SDK)/out/$(EGG_NATIVE_TARGET)/libeggrt-headless.a
 
 SRCFILES:=$(shell find src -type f)
 
-clean:;rm -rf mid out
+# ----- custom tool -----
 
-# Plain `make run` to serve off the source.
-# This is preferred for development and troubleshooting.
-# We don't generate source maps, so it's the only way to see proper code in the browser's debugger.
-run:;http-server -c-1 -p8080 src
+TOOL_SRCDIR:=src/tool
+TOOL_MIDDIR:=mid/tool
+TOOL_EXE:=out/tool
+TOOL_CFILES:=$(filter $(TOOL_SRCDIR)/%.c,$(SRCFILES))
+TOOL_OFILES:=$(patsubst $(TOOL_SRCDIR)/%.c,$(TOOL_MIDDIR)/%.o,$(TOOL_CFILES))
+-include $(TOOL_OFILES:.o=.d)
+$(TOOL_MIDDIR)/%.o:$(TOOL_SRCDIR)/%.c;$(PRECMD) $(CC) -o$@ $<
 
-OUT_HTML:=out/index.html
-OUT_GFX:=out/gfx.png
-SRCFILES_HTML:=$(filter %.html %.js,$(SRCFILES))
-$(OUT_HTML):$(SRCFILES_HTML);$(PRECMD) $(EGG_SDK)/out/eggdev minify -o$@ src/index.html
-$(OUT_GFX):src/gfx.png;$(PRECMD) cp $< $@ # TODO optimize png
+# libeggrt-headless gives us serial and image, but alas not midi. So we need to compile that ourselves.
+EGG_CFILES:=$(shell find $(EGG_SDK)/src/opt/midi -name '*.c')
+EGG_OFILES:=$(patsubst $(EGG_SDK)/src/opt/%.c,$(TOOL_MIDDIR)/opt/%.o,$(EGG_CFILES))
+$(TOOL_MIDDIR)/opt/%.o:$(EGG_SDK)/src/opt/%.c;$(PRECMD) $(CC) -o$@ $<
 
-OUT_ZIP:=out/justbelow.zip
-all:$(OUT_ZIP)
-$(OUT_ZIP):$(OUT_HTML) $(OUT_GFX);$(PRECMD) cd out ; rm -f justbelow.zip ; zip justbelow.zip index.html gfx.png ; unzip -l justbelow.zip ; ls -l
+$(TOOL_EXE):$(TOOL_OFILES) $(EGG_OFILES);$(PRECMD) $(LD) -o$@ $^ $(LDPOST)
 
-# `make run-final` to serve minified, simulating what will happen in production.
-# Do this and test manually before any deployment.
-run-final:$(OUT_HTML) $(OUT_GFX);http-server -c-1 -p8080 out
+# ----- js13k edition -----
+
+JS13K_SRCDIR:=src/js13k
+JS13K_MIDDIR:=mid/js13k
+JS13K_ZIP:=out/justbelow-js13k.zip
+JS13K_MIN_SRC:=$(filter $(JS13K_SRCDIR)/%.js $(JS13K_SRCDIR)/js13k/%.html,$(SRCFILES))
+JS13K_HTML_MID:=$(JS13K_MIDDIR)/index.html
+JS13K_DATA_SRC:=$(filter $(JS13K_SRCDIR)/%.png,$(SRCFILES))
+JS13K_DATA_MID:=$(patsubst $(JS13K_SRCDIR)/%,$(JS13K_MIDDIR)/%,$(JS13K_DATA_SRC))
+all:$(JS13K_ZIP)
+
+# MIDI files are a little weird: We put the output ".bs" file under src, so we can serve the app locally with unminified javascript.
+JS13K_MIDI_SRC:=$(filter $(JS13K_SRCDIR)/%.mid,$(SRCFILES))
+JS13K_MIDI_DST:=$(patsubst %.mid,%.bs,$(JS13K_MIDI_SRC))
+$(JS13K_SRCDIR)/%.bs:$(JS13K_SRCDIR)/%.mid $(TOOL_EXE);$(PRECMD) $(TOOL_EXE) -o$@ $<
+JS13K_DATA_MID+=$(patsubst $(JS13K_SRCDIR)/%,$(JS13K_MIDDIR)/%,$(JS13K_MIDI_DST))
+
+# Egg minifies and packs all HTML and Javascript for us.
+$(JS13K_HTML_MID):$(JS13K_MIN_SRC);$(PRECMD) $(EGG_SDK)/out/eggdev minify -o$@ $(JS13K_SRCDIR)/index.html
+
+# Data files copy in general, but our custom tool gets to take a crack at them along the way.
+$(JS13K_MIDDIR)/%:$(JS13K_SRCDIR)/% $(TOOL_EXE);$(PRECMD) $(TOOL_EXE) -o$@ $<
+
+# And a plain ZIP file at the end, with everything at its root.
+# We also dump the size of everything after this step, since we surely want to know that. It's a size coding contest.
+$(JS13K_ZIP):$(JS13K_HTML_MID) $(JS13K_DATA_MID);$(PRECMD) zip -j -9 $@ $^ && unzip -l $@ && ls -l out
+
+# ----- cdrom edition -----
+
+#TODO cdrom
+
+# ----- global commands -----
+
+# `make run` to serve js13k edition from the source. Great while developing, but beware it's not exactly the real thing.
+run:$(JS13K_MIDI_DST);http-server -c-1 -p8080 src/js13k
+
+# `make run-cd` for a similar treatment of the cdrom edition.
+run-cd:;echo "TODO make run-cd"
+
+# `make run-final` to build the real app and serve it out of the intermediate directory. (js13k edition)
+run-final:$(JS13K_HTML_MID) $(JS13K_DATA_MID);http-server -c-1 -p8080 $(JS13K_MIDDIR)
+
+# `make run-cd-final` mutatis mutandi.
+run-cd-final:;echo "TODO make run-cd-final"
+
+endif

@@ -58,7 +58,7 @@ For js13k 2026, theme "UNICORNS AND RAINBOWS".
 ## Agenda
 
 - [ ] 1. Write the whole game the way I want it, and don't worry about size. Aim to complete by 30 Aug.
-- [ ] 2. Write the build pipeline: minification, compression, and automated optimization.
+- [x] 2. Write the build pipeline: minification, compression, and automated optimization.
 - [ ] 3. Optimize manually and eliminate features until it fits. That's our js13k release. Aim to complete by 5 Sept.
 - [ ] 4. Restore all those features and bulk out further, for the Deluxe CD-ROM edition.
 
@@ -81,11 +81,13 @@ For js13k 2026, theme "UNICORNS AND RAINBOWS".
 - - [ ] Caves.
 - - [ ] Track time and report at gameover.
 - - [ ] Show the skeleton at gameover.
-- [ ] Phase Two.
-- - [ ] Optimize PNG.
-- - [ ] Conditionalize js. Can we pass it thru cpp first? I want at the text level to go like `if js13k ...text... else if cdrom ...text... end`, and have that handled before minification.
+- [x] Phase Two.
+- - [x] Optimize PNG. -- Currently dummy. Ready to play with, once we start The Squeeze.
+- - [x] Reencode MIDI.
+- - [x] Conditionalize js. Can we pass it thru cpp first? I want at the text level to go like `if js13k ...text... else if cdrom ...text... end`, and have that handled before minification.
+- - - Going to treat cdrom edition as a completely independent fork. We'll copy js13k edition once it's stable, then modify from there.
 - [ ] Phase Three.
-- - [ ] Record the pre-squeeze commit, so we can return there for the Deluxe CD-ROM Edition.
+- - [x] Record the pre-squeeze commit, so we can return there for the Deluxe CD-ROM Edition. ...not necessary
 - - [ ] Squeeze.
 - - - [ ] I bet we can reduce the JS size considerably by preferring globals over class members.
 - - - [ ] For that matter, don't use classes.
@@ -94,3 +96,18 @@ For js13k 2026, theme "UNICORNS AND RAINBOWS".
 - - [ ] Deluxe CD-ROM Edition.
 - - [ ] Rich tiles. Neighbor joining etc.
 - - [ ] mp3 music instead of synth.
+
+## BinarySong ".bs", Song Format For js13k Edition
+
+It's sourced from MIDI and shouldn't look too different from MIDI.
+But I want a single track, pretty sure we won't need velocity, and we can encode note durations in their On event.
+No header. Tempo, instruments, channel levels, and all else are hard-coded in the synth.
+Well actually, tempo is irrelevant. We'll record time in milliseconds, like EAU.
+Our song has a range of 58 notes, so we can use a 6-bit noteid instead of 7.
+
+The file is a straight stream of events, no header, first byte of the event tells you all about it:
+```
+  0ttttttt            Fine Delay. (t+1) ms
+  10tttttt            Coarse Delay. ((t+1)*128) ms
+  11nnnnnn ccdddddd   Note. (n+0x27) noteid, (c) chid, (d*16) ms. Longest hold is 1008 ms.
+```
