@@ -71,11 +71,12 @@ For js13k 2026, theme "UNICORNS AND RAINBOWS".
 - - Due to bug in egg's minifier. Workaround: Don't mask variable names with a lambda parameter. Use unique names always.
 - [ ] Need to ensure that there's treasure on whichever island you start on, otherwise user will be confused.
 - - Make it the Compass. Hard to find the next island without one.
+- [ ] Suspend on focus loss.
 
 - [ ] Phase One. Don't stop until we're *over* 13 kB.
 - - [ ] Map.
 - - [ ] Sound effects.
-- - [ ] Music. Voice mp3 in Logic as I usually do, but do it good: That will go in the CD-ROM Edition. Probly the single biggest driver of bulk.
+- - [x] Music. Voice mp3 in Logic as I usually do, but do it good: That will go in the CD-ROM Edition. Probly the single biggest driver of bulk.
 - - [ ] Machete.
 - - [ ] Bomb.
 - - [ ] Caves.

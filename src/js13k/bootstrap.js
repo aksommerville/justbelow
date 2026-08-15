@@ -4,6 +4,7 @@ import { K, Input } from "./Input.js";
 import { Hero } from "./Hero.js";
 import { Overlay } from "./Overlay.js";
 import { Boat } from "./Boat.js";
+import { Audio } from "./Audio.js";
 
 /* App is the top level of our code. Anything above is straight boilerplate.
  */
@@ -13,6 +14,7 @@ class App {
     this.render = new Render(this, this.cvs);
     this.input = new Input(this);
     this.overlay = new Overlay(this);
+    this.audio = new Audio(this);
     this.updt = 0;
     this.frame = requestAnimationFrame((t) => this.update(t));
     this.term = false;
@@ -36,6 +38,7 @@ class App {
     this.frame = null;
     if (this.term) {
       console.log(`App terminated`);//XXX
+      this.audio.quit();
       return;
     }
     
@@ -48,11 +51,13 @@ class App {
       if (el > 20) el = 20;
       this.updt = t;
       el /= 1000;
+      this.audio.update(el);
       this.input.update(el);
       this.overlay.update(el);
       
       if (this.input.state & K.QUIT) {
         this.render.quit();
+        this.audio.quit();
         this.term = true;
         return;
       }
@@ -76,6 +81,7 @@ class App {
     this.term = true; // XXX Probably don't want to kill the whole app here. Let music play during gameover, maybe animation, and let them start over.
     this.win = true;
     this.render.renderWin();
+    this.audio.quit(); // XXX We'll probably want audio during gameover, but we'll need to not destroy ourselves completely, to make that happen.
     
     return 1;
   }

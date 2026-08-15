@@ -183,11 +183,11 @@ static int encode_bs(struct midctx *ctx) {
       delay-=8192;
     }
     if (delay>128) { // Need a Coarse Delay.
-      if (sr_encode_u8(ctx->dst,0x80|((delay>>7)+1))<0) return -1;
+      if (sr_encode_u8(ctx->dst,0x80|((delay>>7)-1))<0) return -1;
       delay&=0x7f;
     }
     if (delay) { // Need a Fine Delay.
-      if (sr_encode_u8(ctx->dst,delay)<0) return -1;
+      if (sr_encode_u8(ctx->dst,delay-1)<0) return -1;
     }
     wh=note->when;
     
@@ -217,11 +217,11 @@ static int encode_bs(struct midctx *ctx) {
     delay-=8192;
   }
   if (delay>128) { // Need a Coarse Delay.
-    if (sr_encode_u8(ctx->dst,0x80|((delay>>7)+1))<0) return -1;
+    if (sr_encode_u8(ctx->dst,0x80|((delay>>7)-1))<0) return -1;
     delay&=0x7f;
   }
   if (delay) { // Need a Fine Delay.
-    if (sr_encode_u8(ctx->dst,delay)<0) return -1;
+    if (sr_encode_u8(ctx->dst,delay-1)<0) return -1;
   }
   
   /* If the shortest delay is very short, issue a warning.
@@ -230,7 +230,7 @@ static int encode_bs(struct midctx *ctx) {
    * ...I got the ones and twos. Now I'm starting to worry that quantizing the longer ones will be audible, and I'm not sure whether high or low is correct.
    * So stop quantizing until we get to hear it.
    */
-  //fprintf(stderr,"%s: Finished encode of %d notes (%d ms total). Shortest delay = %d ms (around %dms on channel %d)\n",g.srcpath,ctx->notec,ctx->now,shortdelay,shorttime,shortchid);
+  fprintf(stderr,"%s: Finished encode of %d notes (%d ms total). Shortest delay = %d ms (around %dms on channel %d)\n",g.srcpath,ctx->notec,ctx->now,shortdelay,shorttime,shortchid);
   
   return 0;
 }
