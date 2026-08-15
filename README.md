@@ -81,7 +81,10 @@ For js13k 2026, theme "UNICORNS AND RAINBOWS".
 - - [ ] Bomb.
 - - [ ] Caves.
 - - [ ] Track time and report at gameover.
+- - [ ] Also track treasures vs total digs, give an Accuracy score.
 - - [ ] Show the skeleton at gameover.
+- - [ ] Wand: Make the rejection look different from dig rejection. Thinking a frown face with a rainbow for the mouth?
+- - [ ] Wand: When within 2m or so, a toast that just says like "near!"
 - [x] Phase Two.
 - - [x] Optimize PNG. -- Currently dummy. Ready to play with, once we start The Squeeze.
 - - [x] Reencode MIDI.

@@ -50,6 +50,8 @@ export class Input {
     
     this.state = 0; // bitfields, K.*. For public consumption.
     
+    this.pk = 0;
+    
     /* {
      *   id
      *   state
@@ -65,10 +67,20 @@ export class Input {
     
     addEventListener("gamepadconnected", e => this.onConn(e));
     addEventListener("gamepaddisconnected", e => this.onDis(e));
+    
+    /* Install a mousedown listener and have it poke Audio.
+     * Browsers might suspend audio until the first "user gesture", and bloody of course, gamepads don't always count as "gestures".
+     * (mine actually does count them, but that's fairly new).
+     */
+    addEventListener("mousedown", () => this.app.audio.poke());
   }
   
   update(el) {
     this.updgp();
+    if (this.state && !this.pk) { // Poke Audio first time our state goes nonzero. Hopefully that's after the first user gesture.
+      this.app.audio.poke();
+      this.pk = 1;
+    }
   }
   
   /* Keyboard.

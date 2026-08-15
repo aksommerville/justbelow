@@ -22,12 +22,18 @@ export class Audio {
     this.ctx = new AudioContext({ latencyHint: "interactive" });
     if (this.ctx.state === "suspended") this.ctx.resume();
     
+    if (0) {//XXX Disable music until I like the sound effects.
     fetch("./unicorn.bs").then(rsp => {
       if (!rsp.ok) throw rsp;
       return rsp.arrayBuffer();
     }).then(rsp => {
       this.decode(rsp);
     }).catch(e => console.error(e));
+    }
+  }
+  
+  poke() {
+    if (this.ctx?.state === "suspended") this.ctx.resume();
   }
   
   update(el) {
