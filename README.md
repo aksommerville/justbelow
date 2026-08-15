@@ -70,41 +70,18 @@ For js13k 2026, theme "UNICORNS AND RAINBOWS".
 - [x] Minified build is not taking keyboard input.
 - - Due to bug in egg's minifier. Workaround: Don't mask variable names with a lambda parameter. Use unique names always.
 - [ ] Need to ensure that there's treasure on whichever island you start on, otherwise user will be confused.
-- [x] Is it possible to unboat in such a way that you can't get back on? Test the edges.
-- - YES. I'm not able to repro on demand but it did happen by accident. Calculate the exact edges and fuzz boat's radius beyond them.
-- - Boat at 141.833,135.481. Diagonalish to land at 142,134.
-- - [x] How did we even get off this boat? When checking for land, it should have checked 141,134 and 142,135, which are both water.
-- - - I bet it's because we have two calls to `bump()`, one per axis. ...wrong. The first bump comes before the second motion. Both see valid positions.
-- - - It's because we update Boat's position after the bump handling -- it doesn't get the final update.
-- - [x] Confirm I can repro before changing anything. Attack the shore diagonally.
-- - - Takes a few tries but yes seems pretty reliable.
-- - Widen the boat's test radius anyway, to be on the safe side.
-- [x] Compass is too powerful; it makes the wand useless. And the wand is important, otherwise we got no rainbows. What if Compass only works on the boat? Or blacks out within some minimum distance?
-- - Make it only work in the Boat.
-- - Also, make a second set of non-selectable inventory. Compass should just always be on, once you get it.
+- - Make it the Compass. Hard to find the next island without one.
 
 - [ ] Phase One. Don't stop until we're *over* 13 kB.
-- - [x] Initial scaffolding. Serve and build.
-- - [x] Map generator.
-- - [x] Hero sprite.
-- - [x] Boat.
-- - [x] Inventory.
-- - [x] Treasure detectors. Just Wand and Compass, I think that's all we need for js13k.
-- - [x] Compass.
 - - [ ] Map.
-- - [x] Digging.
-- - [x] Progress and completion.
 - - [ ] Sound effects.
 - - [ ] Music. Voice mp3 in Logic as I usually do, but do it good: That will go in the CD-ROM Edition. Probly the single biggest driver of bulk.
 - - [ ] Machete.
 - - [ ] Bomb.
 - - [ ] Caves.
-- - [x] Hello and Gameover. Actually for js13k, we might skip Hello.
-- - [x] Gamepad.
-- - [x] `generateMap.js`: Eliminate interior water. See notes.
+- - [ ] Track time and report at gameover.
+- - [ ] Show the skeleton at gameover.
 - [ ] Phase Two.
-- - [x] Minify.
-- - [x] Zip and report size during build.
 - - [ ] Optimize PNG.
 - - [ ] Conditionalize js. Can we pass it thru cpp first? I want at the text level to go like `if js13k ...text... else if cdrom ...text... end`, and have that handled before minification.
 - [ ] Phase Three.
