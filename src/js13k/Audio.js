@@ -22,14 +22,12 @@ export class Audio {
     this.ctx = new AudioContext({ latencyHint: "interactive" });
     if (this.ctx.state === "suspended") this.ctx.resume();
     
-    if (0) {//XXX Disable music until I like the sound effects.
     fetch("./unicorn.bs").then(rsp => {
       if (!rsp.ok) throw rsp;
       return rsp.arrayBuffer();
     }).then(rsp => {
       this.decode(rsp);
     }).catch(e => console.error(e));
-    }
   }
   
   poke() {
@@ -49,7 +47,7 @@ export class Audio {
       const t = e.t + this.sst;
       if (t > stop) break; // OK, we have enough of the future queued.
       this.evtp++;
-      this.note(t, e.c, e.n, e.d);
+      this.note(t, e.c, e.n, e.d, "song");
     }
   }
   
@@ -83,7 +81,11 @@ export class Audio {
     this.evtp = 0;
   }
   
-  note(t, c, n, d) {
+  // (post) is null or (osc,env,t)=>env, return the node to connect to output
+  // Time zero is legal for "asap".
+  note(t, c, n, d, post) {
+    if (!this.ctx) return;
+    if (!t) t = this.ctx.currentTime;
   
     /* Instrument definitions.
      */
@@ -122,6 +124,14 @@ export class Audio {
           lo = 0.050;
         } break;
     }
+    
+    /* Level adjust for song notes and not sound effects.
+     */
+    if (post === "song") {
+      post = null;
+      hi *= 0.500;
+      lo *= 0.500;
+    }
   
     /* Oscillator+Envelope, the simplest reasonable synthesizer.
      */
@@ -129,7 +139,7 @@ export class Audio {
       type,
       frequency: 440 * 2 ** ((n - 30) / 12), // Offset by 39 per our wacky format, then by -69 (A4=440).
     });
-    const env = new GainNode(this.ctx);
+    let env = new GainNode(this.ctx);
     const esus = Math.max(t+d, t+atk+dec);
     env.gain.setValueAtTime(0, 0);
     env.gain.setValueAtTime(0, t);
@@ -140,7 +150,78 @@ export class Audio {
     osc.start();
     osc.stop(esus+rls);
     osc.connect(env);
+    if (post) env = post(osc, env, t);
     env.connect(this.ctx.destination);
     osc.addEventListener("ended", () => { osc.disconnect(); env.disconnect(); }, { once: true });
+  }
+  
+  /* Sound effects.
+   **************************************************************************/
+  
+  sfBoat() {
+    if (!this.ctx) return;
+    this.note(this.ctx.currentTime+0.000, 2, 0x10, 0.100);
+    this.note(this.ctx.currentTime+0.100, 2, 0x14, 0.100);
+  }
+  
+  sfUnboat() {
+    if (!this.ctx) return;
+    this.note(this.ctx.currentTime+0.000, 2, 0x14, 0.100);
+    this.note(this.ctx.currentTime+0.100, 2, 0x10, 0.100);
+  }
+  
+  sfWandRej() {
+    this.note(0, 3, 0x08, 0.200, (osc, env, t) => {
+      osc.detune.setValueAtTime(t, 0);
+      osc.detune.linearRampToValueAtTime(-600, t+0.300);
+      return env;
+    });
+  }
+  
+  sfWand() {
+    this.note(0, 1, 0x20, 0.800, (osc, env, t) => {
+      osc.detune.setValueAtTime(t, 0);
+      osc.detune.linearRampToValueAtTime(1200, t+0.800);
+      return env;
+    });
+  }
+  
+  sfShovelRej() {
+    this.note(0, 3, 0x08, 0.200, (osc, env, t) => {
+      osc.detune.setValueAtTime(t, 0);
+      osc.detune.linearRampToValueAtTime(-600, t+0.300);
+      return env;
+    });
+  }
+  
+  sfShovel() {
+    if (!this.ctx) return;
+    this.note(this.ctx.currentTime+0.000, 1, 0x20, 0.100);
+    this.note(this.ctx.currentTime+0.200, 1, 0x20, 0.100);
+    this.note(this.ctx.currentTime+0.300, 1, 0x25, 0.150);
+  }
+  
+  sfOverlay() {
+    this.note(0, 2, 0x20, 0.300, (osc, env, t) => {
+      osc.detune.setValueAtTime(t, 0);
+      osc.detune.linearRampToValueAtTime(700, t+0.400);
+      return env;
+    });
+  }
+  
+  sfUnoverlay() {
+    this.note(0, 2, 0x27, 0.300, (osc, env, t) => {
+      osc.detune.setValueAtTime(t, 0);
+      osc.detune.linearRampToValueAtTime(-700, t+0.400);
+      return env;
+    });
+  }
+  
+  sfMotion() {
+    this.note(0, 2, 0x30, 0.100, (osc, env, t) => {
+      osc.detune.setValueAtTime(t, 0);
+      osc.detune.linearRampToValueAtTime(400, t+0.100);
+      return env;
+    });
   }
 }

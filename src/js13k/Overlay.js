@@ -34,14 +34,19 @@ export class Overlay {
   }
   
   enable() {
+    if (this.enabled) return;
+    this.app.audio.sfOverlay();
     this.enabled = true;
   }
   
   disable() {
+    if (!this.enabled) return;
+    this.app.audio.sfUnoverlay();
     this.enabled = false;
   }
   
   move(d) {
+    this.app.audio.sfMotion();
     this.itemp += d;
     if (this.itemp < 0) this.itemp = this.items.length - 1;
     else if (this.itemp >= this.items.length) this.itemp = 0;

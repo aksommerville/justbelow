@@ -75,7 +75,7 @@ For js13k 2026, theme "UNICORNS AND RAINBOWS".
 
 - [ ] Phase One. Don't stop until we're *over* 13 kB.
 - - [ ] Map.
-- - [ ] Sound effects.
+- - [x] Sound effects.
 - - [x] Music. Voice mp3 in Logic as I usually do, but do it good: That will go in the CD-ROM Edition. Probly the single biggest driver of bulk.
 - - [ ] Machete.
 - - [ ] Bomb.
@@ -85,6 +85,7 @@ For js13k 2026, theme "UNICORNS AND RAINBOWS".
 - - [ ] Show the skeleton at gameover.
 - - [ ] Wand: Make the rejection look different from dig rejection. Thinking a frown face with a rainbow for the mouth?
 - - [ ] Wand: When within 2m or so, a toast that just says like "near!"
+- - [ ] Don't stop immediately on digging the last treasure. Let its toast and sound play a bit, and fade out.
 - [x] Phase Two.
 - - [x] Optimize PNG. -- Currently dummy. Ready to play with, once we start The Squeeze.
 - - [x] Reencode MIDI.

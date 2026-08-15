@@ -105,6 +105,7 @@ export class Hero {
           this.boat.hero = null;
           this.boat = null;
           this.mbl = 0.3;
+          this.app.audio.sfUnboat();
           return;
         }
       }
@@ -126,6 +127,7 @@ export class Hero {
           this.boat = boat;
           boat.hero = this;
           this.mbl = 0.3;
+          this.app.audio.sfBoat();
           return;
         }
       }
@@ -249,8 +251,10 @@ export class Hero {
     const tr = this.nearestTreasure(10);
     if (!tr) { // Nothing in range, let any existing rainbow play out.
       this.toast(0);
+      this.app.audio.sfWandRej();
       return;
     }
+    this.app.audio.sfWand();
     this.hlx = tr.x;
     this.hly = tr.y;
     this.hlr = Math.sqrt((tr.x - this.x) ** 2 + (tr.y - this.y) ** 2);
@@ -269,6 +273,7 @@ export class Hero {
     if (this.boat || (this.app.map.v[this.iqy * this.app.map.w + this.iqx] !== 0x10)) {
       console.log(`can't dig here (${this.iqx},${this.iqy})`);//TODO friendly rejection
       this.toast(0);
+      this.app.audio.sfShovelRej();
       return;
     }
     // Whether there's treasure or not, replace cell with the dug tile.
@@ -287,11 +292,13 @@ export class Hero {
     }
     // Then get the treasure or reject.
     if (tr) {
+      this.app.audio.sfShovel();
       tr.got = 1;
       console.log(`GOT TREASURE: ${JSON.stringify(tr)}`);//TODO
       this.toast(tr.id);
       this.app.checkCompletion();
     } else {
+      this.app.audio.sfShovelRej();
       console.log(`no treasure here (${this.iqx},${this.iqy})`);//TODO rejection sound and graphics
       this.toast(0);
     }
