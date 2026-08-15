@@ -21,6 +21,10 @@ class App {
     this.map = generateMap();
     this.sprites = [];
     this.win = false;
+    this.trmc = 0; // Termination clock. Counts down if nonzero.
+    this.plt = 0; // Play time.
+    this.digc = 0;
+    this.scorec = 0;
     
     this.sprites.push(new Hero(
       this,
@@ -51,6 +55,7 @@ class App {
       if (el > 20) el = 20;
       this.updt = t;
       el /= 1000;
+      this.plt += el;
       this.audio.update(el);
       this.input.update(el);
       this.overlay.update(el);
@@ -64,7 +69,16 @@ class App {
       
       for (const sprite of this.sprites) sprite.update?.(el);
       
-      if (this.term && this.win) return; // Don't overwrite the "game over" bit we just drew!
+      if (this.trmc > 0) {
+        if ((this.trmc -= el) <= 0) {
+          this.term = true;
+          this.win = true;
+          this.render.renderWin();
+          this.audio.quit();
+          return;
+        }
+      }
+      
       this.render.render();
     }
     
@@ -78,10 +92,7 @@ class App {
      */
     if (this.map.trv.find(t => !t.got)) return 0;
     
-    this.term = true; // XXX Probably don't want to kill the whole app here. Let music play during gameover, maybe animation, and let them start over.
-    this.win = true;
-    this.render.renderWin();
-    this.audio.quit(); // XXX We'll probably want audio during gameover, but we'll need to not destroy ourselves completely, to make that happen.
+    this.trmc = 2.000;
     
     return 1;
   }

@@ -250,7 +250,7 @@ export class Hero {
   useWand() {
     const tr = this.nearestTreasure(10);
     if (!tr) { // Nothing in range, let any existing rainbow play out.
-      this.toast(0);
+      this.toast(-1);
       this.app.audio.sfWandRej();
       return;
     }
@@ -271,7 +271,6 @@ export class Hero {
     // Only plain sand is diggable, reject all else. (esp including dug holes).
     // Also, no digging in a boat, that doesn't even make sense.
     if (this.boat || (this.app.map.v[this.iqy * this.app.map.w + this.iqx] !== 0x10)) {
-      console.log(`can't dig here (${this.iqx},${this.iqy})`);//TODO friendly rejection
       this.toast(0);
       this.app.audio.sfShovelRej();
       return;
@@ -291,15 +290,15 @@ export class Hero {
       break;
     }
     // Then get the treasure or reject.
+    this.app.digc++;
     if (tr) {
       this.app.audio.sfShovel();
       tr.got = 1;
-      console.log(`GOT TREASURE: ${JSON.stringify(tr)}`);//TODO
+      this.app.scorec++;
       this.toast(tr.id);
       this.app.checkCompletion();
     } else {
       this.app.audio.sfShovelRej();
-      console.log(`no treasure here (${this.iqx},${this.iqy})`);//TODO rejection sound and graphics
       this.toast(0);
     }
   }
@@ -403,11 +402,16 @@ export class Hero {
     // Toast above my head briefly after digging.
     if (this.tttl > 0) {
       let ti = this.tid ? 0x8a : 0x89;
+      switch (this.tid) {
+        case -1: ti = 0x8c; break; // wand reject
+        case  0: ti = 0x89; break; // shovel reject
+        default: ti = 0x8a; break; // positive
+      }
       const srcx = (ti & 15) * TS;
       const srcy = (ti >> 4) * TS;
       if (this.tttl < 0.5) ctx.globalAlpha = this.tttl*2;
       ctx.drawImage(this.app.render.gfx, srcx, srcy, TS, TS, x-(TS>>1), y-TS-(TS>>1), TS, TS);
-      if (this.tid) {
+      if (this.tid > 0) {
         ctx.drawImage(this.app.render.gfx, (this.tid-1)*10, 118, 10, 10, x-5, y-TS-5, 10, 10);
         if ((this.tttl * 10) & 1) {
           ctx.drawImage(this.app.render.gfx, 176, srcy, TS, TS, x-(TS>>1), y-TS-(TS>>1), TS, TS);

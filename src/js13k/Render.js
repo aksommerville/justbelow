@@ -68,9 +68,18 @@ export class Render {
       }
     }
     
-    /* Lastly the overlay.
+    /* Overlay.
      */
     this.app.overlay.render(ctx);
+    
+    /* If we're counting down to termination, fade out.
+     */
+    if ((this.app.trmc > 0) && (this.app.trmc < 1)) {
+      ctx.globalAlpha = 1-this.app.trmc;
+      ctx.fillStyle = "#000";
+      ctx.fillRect(0, 0, this.cvs.width, this.cvs.height);
+      ctx.globalAlpha = 1;
+    }
   }
   
   quit() {
@@ -100,11 +109,33 @@ export class Render {
     return x - x0;
   }
   
+  textc(ctx, y, t) {
+    const gc = t.replaceAll(" ","").length;
+    const len = gc * 4 + (t.length - gc) * 2;
+    const x = (this.cvs.width >> 1) - (len >> 1);
+    this.text(ctx, x, y, t);
+  }
+  
   renderWin() {
     const ctx = this.cvs.getContext("2d");
     ctx.fillStyle = "#000";
     ctx.fillRect(0, 0, this.cvs.width, this.cvs.height);
-    this.text(ctx, (this.cvs.width >> 1) - 15, (this.cvs.height >> 1) - 2, "You win!");
-    //TODO Unicorn skeleton, credits, time elapsed?
+    this.textc(ctx, 30, "You found all the bones!");
+    ctx.drawImage(this.gfx, 0, 128, 16, 16, 100, 48, 16, 16);
+    ctx.drawImage(this.gfx, 49, 97, 24, 20, 120, 43, 24, 20);
+    this.textc(ctx, 70, `Time: ${this.tfmt(this.app.plt)}`);
+    const pct = Math.max(0, Math.min(100, Math.round((this.app.scorec * 100) / (this.app.digc||1))));
+    this.textc(ctx, 76, `Aim: ${pct}%`);
+    this.textc(ctx, 90, "By AK Sommerville");
+    this.textc(ctx, 96, "September 2026");
+    this.textc(ctx, 110, "Thanks for playing!");
+  }
+  
+  tfmt(s) {
+    const ms = Math.floor(s * 1000) % 1000;
+    let sec = ~~s;
+    let min = Math.floor(sec / 60);
+    sec %= 60;
+    return `${min}:${sec.toString().padStart(2, '0')}.${ms.toString().padStart(3, '0')}`;
   }
 }
