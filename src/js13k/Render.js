@@ -71,13 +71,7 @@ export class Render {
       if ((x < xlo) || (x > xhi)) continue;
       const y = Math.round(sprite.y * TS - cy);
       if ((y < ylo) || (y > yhi)) continue;
-      if (sprite.render) {
-        sprite.render(ctx, x, y);
-      } else {
-        //XXX fallback for incomplete sprite
-        const srcx=0, srcy=128;//TODO
-        ctx.drawImage(this.gfx, srcx, srcy, TS, TS, x-(TS>>1), y-(TS>>1), TS, TS);
-      }
+      sprite.render?.(ctx, x, y);
     }
     
     /* Overlay.
@@ -113,7 +107,7 @@ export class Render {
         // Illegal codepoint. Skip it and don't output anything.
       } else {
         const srcx = (ch & 15) * 3;
-        const srcy = 95 + ((ch >> 4) - 2) * 5;
+        const srcy = 47 + ((ch >> 4) - 2) * 5;
         ctx.drawImage(this.gfx, srcx, srcy, 3, 5, x, y, 3, 5);
         x += 4;
       }
@@ -133,8 +127,8 @@ export class Render {
     ctx.fillStyle = "#000";
     ctx.fillRect(0, 0, this.cvs.width, this.cvs.height);
     this.textc(ctx, 30, "You found all the bones!");
-    ctx.drawImage(this.gfx, 0, 128, 16, 16, 100, 48, 16, 16);
-    ctx.drawImage(this.gfx, 49, 97, 24, 20, 120, 43, 24, 20);
+    ctx.drawImage(this.gfx, 0, 80, 16, 16, 100, 48, 16, 16);
+    ctx.drawImage(this.gfx, 49, 49, 24, 20, 120, 43, 24, 20);
     this.textc(ctx, 70, `Time: ${this.tfmt(this.app.plt)}`);
     const pct = Math.max(0, Math.min(100, Math.round((this.app.scorec * 100) / (this.app.digc||1))));
     this.textc(ctx, 76, `Aim: ${pct}%`);

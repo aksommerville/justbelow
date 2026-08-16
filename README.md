@@ -73,10 +73,11 @@ For js13k 2026, theme "UNICORNS AND RAINBOWS".
 ## TODO
 
 - [ ] Phase Three.
-- - [ ] Squeeze.
+- - [x] Squeeze.
 - - - 13845 at the start. Just need to shave 533 bytes off this. No sweat.
-- - - [ ] I bet we can reduce the JS size considerably by preferring globals over class members.
-- - - [ ] For that matter, don't use classes.
+- - - Remove unused graphics, and we're at 13157. 150 bytes to spare if we want them!
+- - - [x] I bet we can reduce the JS size considerably by preferring globals over class members. ...didn't need
+- - - [x] For that matter, don't use classes. ...didn't need
 - - [ ] js13k submission.
 - [ ] Phase Four.
 - - [ ] Deluxe CD-ROM Edition.

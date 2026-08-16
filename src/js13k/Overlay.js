@@ -89,10 +89,10 @@ export class Overlay {
         ctx.fillStyle = "#004";
         ctx.fillRect(dstx-1, 0, 12, barh);
         if (this.enslide >= 1) {
-          ctx.drawImage(this.app.render.gfx, 0, 115, 5, 3, dstx+3, dsty+11, 5, 3);
+          ctx.drawImage(this.app.render.gfx, 0, 67, 5, 3, dstx+3, dsty+11, 5, 3);
         }
       }
-      ctx.drawImage(this.app.render.gfx, (item.id-1)*10, 118, 10, 10, dstx, dsty, 10, 10);
+      ctx.drawImage(this.app.render.gfx, (item.id-1)*10, 70, 10, 10, dstx, dsty, 10, 10);
     }
     
     // Progress indicator on the left side.
@@ -102,7 +102,7 @@ export class Overlay {
     
     // Then passive items right of the count.
     for (const item of this.pasv) {
-      ctx.drawImage(this.app.render.gfx, (item.id-1)*10, 118, 10, 10, dstx, dsty, 10, 10);
+      ctx.drawImage(this.app.render.gfx, (item.id-1)*10, 70, 10, 10, dstx, dsty, 10, 10);
       dstx += 11;
     }
   }

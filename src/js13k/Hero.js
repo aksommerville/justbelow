@@ -389,8 +389,8 @@ export class Hero {
     /* Compass.
      */
     if (this.cmps !== null) { // Compass: Highlight one direction.
-      // Tile 0x88. Trim 1 pixel top and left, and 2 pixels right and bottom.
-      const sx=129, sy=129, w=13, r=16;
+      // Tile 0x58. Trim 1 pixel top and left, and 2 pixels right and bottom.
+      const sx=129, sy=81, w=13, r=16;
       const cx = x + r * Math.cos(this.cmps);
       const cy = y + r * Math.sin(this.cmps);
       ctx.save();
@@ -404,7 +404,7 @@ export class Hero {
      * If we're riding the boat, it does the rendering.
      */
     if (!this.boat) {
-      let ti = 0x80;
+      let ti = 0x50;
       switch (this.af) {
         case 1: ti += 0x10; break;
         case 3: ti += 0x20; break;
@@ -421,19 +421,19 @@ export class Hero {
     
     // Toast above my head briefly after digging.
     if (this.tttl > 0) {
-      let ti = this.tid ? 0x8a : 0x89;
+      let ti = this.tid ? 0x5a : 0x59;
       switch (this.tid) {
-        case -2: ti = 0x8d; break; // wand near
-        case -1: ti = 0x8c; break; // wand reject
-        case  0: ti = 0x89; break; // shovel reject
-        default: ti = 0x8a; break; // positive
+        case -2: ti = 0x5d; break; // wand near
+        case -1: ti = 0x5c; break; // wand reject
+        case  0: ti = 0x59; break; // shovel reject
+        default: ti = 0x5a; break; // positive
       }
       const srcx = (ti & 15) * TS;
       const srcy = (ti >> 4) * TS;
       if (this.tttl < 0.5) ctx.globalAlpha = this.tttl*2;
       ctx.drawImage(this.app.render.gfx, srcx, srcy, TS, TS, x-(TS>>1), y-TS-(TS>>1), TS, TS);
       if (this.tid > 0) {
-        ctx.drawImage(this.app.render.gfx, (this.tid-1)*10, 118, 10, 10, x-5, y-TS-5, 10, 10);
+        ctx.drawImage(this.app.render.gfx, (this.tid-1)*10, 70, 10, 10, x-5, y-TS-5, 10, 10);
         if ((this.tttl * 10) & 1) {
           ctx.drawImage(this.app.render.gfx, 176, srcy, TS, TS, x-(TS>>1), y-TS-(TS>>1), TS, TS);
         }

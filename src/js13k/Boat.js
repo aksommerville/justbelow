@@ -26,7 +26,7 @@ export class Boat {
   }
   
   render(ctx, x, y) {
-    let ti = 0x84;
+    let ti = 0x54;
     if (this.af) ti += 1;
     if (this.hero) ti += 2;
     const srcx = (ti & 15) * TS;
