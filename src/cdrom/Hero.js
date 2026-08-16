@@ -382,7 +382,9 @@ export class Hero {
           ctx.lineTo(x0+TS,y0   );
           ctx.lineTo(x0   ,y0   );
           ctx.strokeStyle = "#0f0";
+          ctx.lineWidth = 6;
           ctx.stroke();
+          ctx.lineWidth = 1;
         } break;
     }
     
@@ -390,7 +392,7 @@ export class Hero {
      */
     if (this.cmps !== null) { // Compass: Highlight one direction.
       // Tile 0x58. Trim 1 pixel top and left, and 2 pixels right and bottom.
-      const sx=129, sy=81, w=13, r=16;
+      const sx=774, sy=486, w=78, r=96;
       const cx = x + r * Math.cos(this.cmps);
       const cy = y + r * Math.sin(this.cmps);
       ctx.save();
@@ -433,9 +435,9 @@ export class Hero {
       if (this.tttl < 0.5) ctx.globalAlpha = this.tttl*2;
       ctx.drawImage(this.app.render.gfx, srcx, srcy, TS, TS, x-(TS>>1), y-TS-(TS>>1), TS, TS);
       if (this.tid > 0) {
-        ctx.drawImage(this.app.render.gfx, (this.tid-1)*10, 70, 10, 10, x-5, y-TS-5, 10, 10);
+        ctx.drawImage(this.app.render.gfx, (this.tid-1)*60, 420, 60, 60, x-30, y-TS-30, 60, 60);
         if ((this.tttl * 10) & 1) {
-          ctx.drawImage(this.app.render.gfx, 176, srcy, TS, TS, x-(TS>>1), y-TS-(TS>>1), TS, TS);
+          ctx.drawImage(this.app.render.gfx, 1056, srcy, TS, TS, x-(TS>>1), y-TS-(TS>>1), TS, TS);
         }
       }
       ctx.globalAlpha = 1;
@@ -446,8 +448,8 @@ export class Hero {
       const ta = this.hlt - this.hlp * 1.000;
       const tz = this.hlt + this.hlp * 1.000;
       ctx.globalAlpha = Math.min(1, (1 - this.hlp) * 2);
-      ctx.lineWidth = 2;
-      const rstep = 2;
+      ctx.lineWidth = 12;
+      const rstep = 12;
       const clrv = ["#f0f", "#00f", "#0ff", "#0f0", "#ff0", "#f80", "#f00"];
       for (let r=this.hlr*TS-rstep*3, i=0; i<7; i++, r+=rstep) {
         if (r <= 0) continue;

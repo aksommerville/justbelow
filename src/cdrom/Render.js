@@ -3,7 +3,7 @@
  
 import { Hero } from "./Hero.js";
  
-export const TS = 16;
+export const TS = 96;
  
 export class Render {
   constructor(app, cvs) {
@@ -95,46 +95,35 @@ export class Render {
   }
   
   text(ctx, x, y, t) {
-    if (!t) return 0;
-    const x0 = x;
-    for (let i=0; i<t.length; i++) {
-      let ch = t.charCodeAt(i);
-      if (ch >= 0x60) ch -= 0x20; // Turn uppercase to lowercase (and mangle some punctuation we don't care about).
-      if (ch <= 0x20) {
-        // All C0 counts as space. Narrower than a glyph.
-        x += 2;
-      } else if (ch > 0x5f) {
-        // Illegal codepoint. Skip it and don't output anything.
-      } else {
-        const srcx = (ch & 15) * 3;
-        const srcy = 47 + ((ch >> 4) - 2) * 5;
-        ctx.drawImage(this.gfx, srcx, srcy, 3, 5, x, y, 3, 5);
-        x += 4;
-      }
-    }
-    return x - x0;
+    ctx.font = "30px sans-serif";
+    ctx.fillStyle = "#fff";
+    ctx.textAlign = "left";
+    ctx.textBaseline = "top";
+    ctx.fillText(t, x, y);
+    return ctx.measureText(t).width;
   }
   
   textc(ctx, y, t) {
-    const gc = t.replaceAll(" ","").length;
-    const len = gc * 4 + (t.length - gc) * 2;
-    const x = (this.cvs.width >> 1) - (len >> 1);
-    this.text(ctx, x, y, t);
+    ctx.font = "30px sans-serif";
+    ctx.fillStyle = "#fff";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "top";
+    ctx.fillText(t, this.cvs.width >> 1, y);
   }
   
   renderWin() {
     const ctx = this.cvs.getContext("2d");
     ctx.fillStyle = "#000";
     ctx.fillRect(0, 0, this.cvs.width, this.cvs.height);
-    this.textc(ctx, 30, "You found all the bones!");
-    ctx.drawImage(this.gfx, 0, 80, 16, 16, 100, 48, 16, 16);
-    ctx.drawImage(this.gfx, 49, 49, 24, 20, 120, 43, 24, 20);
-    this.textc(ctx, 70, `Time: ${this.tfmt(this.app.plt)}`);
+    this.textc(ctx, 180, "You found all the bones!");
+    ctx.drawImage(this.gfx, 0, 480, 96, 96, 830, 288, 96, 96);
+    ctx.drawImage(this.gfx, 294, 294, 252, 120, 960, 252, 252, 120);
+    this.textc(ctx, 420, `Time: ${this.tfmt(this.app.plt)}`);
     const pct = Math.max(0, Math.min(100, Math.round((this.app.scorec * 100) / (this.app.digc||1))));
-    this.textc(ctx, 76, `Aim: ${pct}%`);
-    this.textc(ctx, 90, "By AK Sommerville");
-    this.textc(ctx, 96, "September 2026");
-    this.textc(ctx, 110, "Thanks for playing!");
+    this.textc(ctx, 456, `Aim: ${pct}%`);
+    this.textc(ctx, 540, "By AK Sommerville");
+    this.textc(ctx, 576, "September 2026");
+    this.textc(ctx, 660, "Thanks for playing!");
   }
   
   tfmt(s) {

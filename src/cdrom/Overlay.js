@@ -66,7 +66,7 @@ export class Overlay {
   render(ctx) {
   
     // Take some measurements according to (enslide).
-    const barh = Math.round(10 + this.enslide * 10);
+    const barh = Math.round(60 + this.enslide * 60);
     const blota = this.enslide * 0.500;
     const bara = 0.5 + this.enslide * 0.3;
     
@@ -81,29 +81,29 @@ export class Overlay {
     ctx.globalAlpha = 1;
     
     // Item icons for equippables.
-    let dsty = (barh >> 1) - 5;
-    let dstx = this.app.render.cvs.width - 15;
-    for (let i=this.items.length; i-->0; dstx-=11) {
+    let dsty = (barh >> 1) - 30;
+    let dstx = this.app.render.cvs.width - 90;
+    for (let i=this.items.length; i-->0; dstx-=66) {
       const item = this.items[i];
       if (i === this.itemp) { // Selected.
         ctx.fillStyle = "#004";
-        ctx.fillRect(dstx-1, 0, 12, barh);
+        ctx.fillRect(dstx-3, 0, 66, barh);
         if (this.enslide >= 1) {
-          ctx.drawImage(this.app.render.gfx, 0, 67, 5, 3, dstx+3, dsty+11, 5, 3);
+          ctx.drawImage(this.app.render.gfx, 0, 402, 30, 18, dstx+18, dsty+66, 30, 18);
         }
       }
-      ctx.drawImage(this.app.render.gfx, (item.id-1)*10, 70, 10, 10, dstx, dsty, 10, 10);
+      ctx.drawImage(this.app.render.gfx, (item.id-1)*60, 420, 60, 60, dstx, dsty, 60, 60);
     }
     
     // Progress indicator on the left side.
     const trc = this.app.map.trv.reduce((a, v) => a + (v.got ? 1 : 0), 0);
     const tra = this.app.map.trv.length;
-    dstx = 5 + this.app.render.text(ctx, 3, dsty+2, `${trc}/${tra}`);
+    dstx = 30 + this.app.render.text(ctx, 18, dsty+16, `${trc}/${tra}`);
     
     // Then passive items right of the count.
     for (const item of this.pasv) {
-      ctx.drawImage(this.app.render.gfx, (item.id-1)*10, 70, 10, 10, dstx, dsty, 10, 10);
-      dstx += 11;
+      ctx.drawImage(this.app.render.gfx, (item.id-1)*60, 420, 60, 60, dstx, dsty, 60, 60);
+      dstx += 66;
     }
   }
 }

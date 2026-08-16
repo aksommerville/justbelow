@@ -77,6 +77,9 @@ For js13k 2026, theme "UNICORNS AND RAINBOWS".
 - [ ] Deluxe CD-ROM Edition.
 - - [x] Copy js13k initially.
 - - [ ] High resolution graphics.
+- - - [x] Bump everything to 96px tiles instead of 16px, and a 1920x1080 framebuffer.
+- - - [ ] Redraw existing tiles at the higher resolution.
+- - - [x] Text: Use CanvasRenderingContext2D's built-in text rendering, no need for our custom 3x5.
 - - [ ] Rich tiles. Neighbor joining etc.
 - - [x] mp3 music instead of synth.
 - - [ ] Recorded sound effects instead of synth.
