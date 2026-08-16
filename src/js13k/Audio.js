@@ -34,6 +34,13 @@ export class Audio {
     if (this.ctx?.state === "suspended") this.ctx.resume();
   }
   
+  pause() {
+    this.ctx?.suspend();
+  }
+  resume() {
+    this.ctx?.resume();
+  }
+  
   update(el) {
     if (this.ctx?.state !== "running") return;
     if (this.evtv.length < 1) return;

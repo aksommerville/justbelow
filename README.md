@@ -69,11 +69,12 @@ For js13k 2026, theme "UNICORNS AND RAINBOWS".
 
 - [x] Minified build is not taking keyboard input.
 - - Due to bug in egg's minifier. Workaround: Don't mask variable names with a lambda parameter. Use unique names always.
-- [ ] Need to ensure that there's treasure on whichever island you start on, otherwise user will be confused.
+- [x] Need to ensure that there's treasure on whichever island you start on, otherwise user will be confused.
 - - Make it the Compass. Hard to find the next island without one.
-- [ ] Suspend on focus loss.
+- - Actually no. All treasures are bones, and you start with the compass. I don't think it's necessary to require treasure on the first island.
+- [x] Suspend on focus loss.
 
-- [ ] Phase One. Don't stop until we're *over* 13 kB.
+- [x] Phase One. Don't stop until we're *over* 13 kB.
 - - [x] Map. Out of scope for js13k.
 - - [x] Sound effects.
 - - [x] Music. Voice mp3 in Logic as I usually do, but do it good: That will go in the CD-ROM Edition. Probly the single biggest driver of bulk.
@@ -92,7 +93,7 @@ For js13k 2026, theme "UNICORNS AND RAINBOWS".
 - - [x] World is too big. Keep it tight. ...200x150 feels good. Islands nice and close. Max 20 seconds to reach a world edge.
 - - [x] Arbitrary goalpost: I should be able to complete it under 2:00 most of the time. Currently more like 5:00. ...2:30 ish is now typical, and that's good.
 - - [x] Number keys for instant item change. ...nevermind. Using Left Shift as CHOOSE makes WASD usable, no need for the extra logic.
-- - [ ] Restart after gameover.
+- - [x] Restart after gameover.
 - [x] Phase Two.
 - - [x] Optimize PNG. -- Currently dummy. Ready to play with, once we start The Squeeze.
 - - [x] Reencode MIDI.

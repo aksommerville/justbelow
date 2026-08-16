@@ -6,7 +6,10 @@
 export class Overlay {
   constructor(app) {
     this.app = app;
-    
+    this.reset();
+  }
+  
+  reset() {
     this.enabled = false; // "enabled" means "engaged", like we're consuming input right now.
     this.enslide = 0;
     
