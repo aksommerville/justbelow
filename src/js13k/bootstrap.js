@@ -41,7 +41,6 @@ class App {
   update(t) {
     this.frame = null;
     if (this.term) {
-      console.log(`App terminated`);//XXX
       this.audio.quit();
       return;
     }
@@ -89,7 +88,6 @@ class App {
   checkCompletion() {
   
     /* Incomplete if any treasure remains ungot.
-     * TODO Eventually it should be only if a *unicorn bone* remains ungot, not necessarily any treasure.
      */
     if (this.map.trv.find(t => !t.got)) return 0;
     

@@ -88,10 +88,11 @@ For js13k 2026, theme "UNICORNS AND RAINBOWS".
 - - [x] Don't stop immediately on digging the last treasure. Let its toast and sound play a bit, and fade out.
 - - [x] Animate Dot walking.
 - - [x] Animate water.
-- - [ ] 20 bones is too many. How about 13?
-- - [ ] World is too big. Keep it tight.
-- - [ ] Arbitrary goalpost: I should be able to complete it under 2:00 most of the time. Currently more like 5:00.
-- - [ ] Number keys for instant item change.
+- - [x] 20 bones is too many. How about 13?
+- - [x] World is too big. Keep it tight. ...200x150 feels good. Islands nice and close. Max 20 seconds to reach a world edge.
+- - [x] Arbitrary goalpost: I should be able to complete it under 2:00 most of the time. Currently more like 5:00. ...2:30 ish is now typical, and that's good.
+- - [x] Number keys for instant item change. ...nevermind. Using Left Shift as CHOOSE makes WASD usable, no need for the extra logic.
+- - [ ] Restart after gameover.
 - [x] Phase Two.
 - - [x] Optimize PNG. -- Currently dummy. Ready to play with, once we start The Squeeze.
 - - [x] Reencode MIDI.

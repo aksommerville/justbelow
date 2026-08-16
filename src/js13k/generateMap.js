@@ -33,14 +33,13 @@ function dilate(dst, src, w, h) {
 
 export function generateMap() {
 
-  /* TODO Size of world.
-   * Maybe this should be configurable.
+  /* Size of world and treasure count. Very flexible.
    */
-  const w = 480;
-  const h = 270;
+  const w = 200;
+  const h = 150;
   const islc = 10;
-  const islspc = 40;
-  const trc = 20;
+  const islspc = 30;
+  const trc = 13;
   const v = new Uint8Array(w * h);
   
   /* Seed the initial islands.
@@ -157,10 +156,6 @@ export function generateMap() {
     }
   }
   
-  /* Add grass, rocks, and trees to each island's interior.
-   */
-  //TODO
-  
   /* Bury treasure!
    * First, at terrible cost, put the index of every surface cell into an array.
    * Then pull one at random, if it's too close to a prior selection discard it, and otherwise put a treasure there.
@@ -187,8 +182,7 @@ export function generateMap() {
         }
       }
       if (tooClose) continue;
-      let id = 4; //TODO Pick treasure id.
-      trv.push({ x, y, id });
+      trv.push({ x, y, id: 4 }); // id always 4 -- unicorn bones are the only treasure
       break;
     }
   }
@@ -215,6 +209,50 @@ export function generateMap() {
     bx += dx;
     by += dy;
   }
+  
+  /* XXX Very temporary. Draw a picture of the map and show it to me.
+   *
+  if (1) {
+    const cvs = document.createElement("CANVAS");
+    cvs.width = w;
+    cvs.height = h;
+    const ctx = cvs.getContext("2d");
+    const imd = ctx.createImageData(w, h);
+    for (let srcp=0, dstp=0; srcp<w*h; srcp++) {
+      if (v[srcp]) { // Sand.
+        imd.data[dstp++] = 0xff;
+        imd.data[dstp++] = 0xff;
+        imd.data[dstp++] = 0x00;
+        imd.data[dstp++] = 0xff;
+      } else { // Water.
+        imd.data[dstp++] = 0x00;
+        imd.data[dstp++] = 0x00;
+        imd.data[dstp++] = 0xff;
+        imd.data[dstp++] = 0xff;
+      }
+    }
+    // Also highlight the treasures in black:
+    for (const tr of trv) {
+      const x = Math.floor(tr.x);
+      const y = Math.floor(tr.y);
+      let p = (y*w+x)*4;
+      imd.data[p++] = 0x00;
+      imd.data[p++] = 0x00;
+      imd.data[p++] = 0x00;
+      imd.data[p++] = 0xff;
+    }
+    // Show me, and dismiss on click:
+    ctx.putImageData(imd, 0, 0);
+    cvs.addEventListener("mousedown", () => cvs.remove());
+    cvs.style.position = "absolute";
+    cvs.style.left = "0";
+    cvs.style.top = "0";
+    cvs.style.width = "100vw";
+    cvs.style.height = "100vh";
+    cvs.style.objectFit = "contain";
+    document.body.append(cvs);
+  }
+  /**/
   
   return {w, h, v, herox, heroy, trv, bx, by};
 }
