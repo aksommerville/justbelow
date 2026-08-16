@@ -93,15 +93,15 @@ $(CDROM_ZIP):$(CDROM_HTML_MID) $(CDROM_DATA_MID);$(PRECMD) zip -j -9 $@ $^
 all_and_show_size:all;ls -l out
 
 # `make run` to serve js13k edition from the source. Great while developing, but beware it's not exactly the real thing.
-run:$(JS13K_MIDI_DST);http-server -c-1 -p8080 src/js13k
+run:$(JS13K_MIDI_DST);http-server -c-1 -p8080 $(JS13K_SRCDIR)
 
 # `make run-cd` for a similar treatment of the cdrom edition.
-run-cd:;echo "TODO make run-cd"
+run-cd:;http-server -c-1 -p8080 $(CDROM_SRCDIR)
 
 # `make run-final` to build the real app and serve it out of the intermediate directory. (js13k edition)
 run-final:$(JS13K_HTML_MID) $(JS13K_DATA_MID);http-server -c-1 -p8080 $(JS13K_MIDDIR)
 
 # `make run-cd-final` mutatis mutandi.
-run-cd-final:;echo "TODO make run-cd-final"
+run-cd-final:$(CDROM_HTML_MID) $(CDROM_DATA_MID);http-server -c-1 -p8080 $(CDROM_MIDDIR)
 
 endif

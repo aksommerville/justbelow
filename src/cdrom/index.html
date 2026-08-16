@@ -1,5 +1,25 @@
 <!DOCTYPE html>
 <html><head>
-<!-- TODO Just Below The Surface: Deluxe CD-ROM Edition -->
+<script src="./bootstrap.js" type="module"></script>
+<style>
+body {
+  margin: 0;
+  overflow: hidden;
+}
+#c {
+  width: 100vw;
+  height: 100vh;
+  image-rendering: pixelated;
+  object-fit: contain;
+  background-color: #000;
+  cursor: none;
+}
+img,audio {
+  display: none;
+}
+</style>
 </head><body>
+<img id="gfx" src="./gfx.png"/>
+<audio id="song_unicorn" loop="loop" autoplay="autoplay" src="./unicorn.mp3"></audio>
+<canvas id="c" width="240" height="135"></canvas>
 </body></html>
