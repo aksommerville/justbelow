@@ -46,6 +46,10 @@ export class Hero {
     // Dig toast.
     this.tid = 0;
     this.tttl = 0;
+    
+    // Walking animation.
+    this.ac = 0;
+    this.af = 0;
   }
   
   /* Physics.
@@ -75,7 +79,6 @@ export class Hero {
         }
       }
     }
-    // TODO Should we check world edges when in the boat? Anything OOB is effectively water, which the boat can travel on.
     return 0;
   }
   
@@ -139,6 +142,13 @@ export class Hero {
   
   update(el) {
   
+    /* Animate walking.
+     */
+    if ((this.ac -= el) <= 0) {
+      this.ac += 0.150;
+      if (++this.af >= 4) this.af = 0;
+    }
+  
     /* Check press and release of the USE and CHOOSE buttons.
      * And if the overlay is enabled, send dpad clicks to it.
      */
@@ -200,6 +210,8 @@ export class Hero {
         this.boat.x = this.x;
         this.boat.y = this.y;
       }
+    } else {
+      this.ac = this.af = 0;
     }
     this.indx = dx;
     this.indy = dy;
@@ -255,11 +267,15 @@ export class Hero {
       return;
     }
     this.app.audio.sfWand();
-    this.hlx = tr.x;
-    this.hly = tr.y;
-    this.hlr = Math.sqrt((tr.x - this.x) ** 2 + (tr.y - this.y) ** 2);
-    this.hlt = Math.atan2(this.y - tr.y, this.x - tr.x);
-    this.hlp = 0;
+    if ((this.hlr = Math.sqrt((tr.x - this.x) ** 2 + (tr.y - this.y) ** 2)) < 1.5) { // Very near -- no rainbow.
+      this.toast(-2);
+      this.hlr = 0;
+    } else { // Middle case: Rainbow!
+      this.hlx = tr.x;
+      this.hly = tr.y;
+      this.hlt = Math.atan2(this.y - tr.y, this.x - tr.x);
+      this.hlp = 0;
+    }
   }
   
   /* Shovel.
@@ -389,6 +405,10 @@ export class Hero {
      */
     if (!this.boat) {
       let ti = 0x80;
+      switch (this.af) {
+        case 1: ti += 0x10; break;
+        case 3: ti += 0x20; break;
+      }
       if (this.fdx < 0) ti += 2;
       else if (this.fdx > 0) ti += 3;
       else if (this.fdy < 0) ti += 1;
@@ -403,6 +423,7 @@ export class Hero {
     if (this.tttl > 0) {
       let ti = this.tid ? 0x8a : 0x89;
       switch (this.tid) {
+        case -2: ti = 0x8d; break; // wand near
         case -1: ti = 0x8c; break; // wand reject
         case  0: ti = 0x89; break; // shovel reject
         default: ti = 0x8a; break; // positive

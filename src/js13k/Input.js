@@ -40,6 +40,7 @@ const bByK = {
   KeyZ: K.USE,
   KeyX: K.CHOOSE,
   Space: K.USE,
+  ShiftLeft: K.CHOOSE,
   Escape: K.QUIT,
   Enter: K.PAUSE,
 };
@@ -89,7 +90,8 @@ export class Input {
   onKeyDown(e) {
     
     // Modifiers held? Not interested; let the browser take it.
-    if (e.shiftKey || e.ctrlKey || e.altKey) return;
+    // Permit Shift: For players using WASD, Left Shift is the obvious CHOOSE button.
+    if (e.ctrlKey || e.altKey) return;
     
     // Key not mapped? Again, not interested.
     const btnid = bByK[e.code];

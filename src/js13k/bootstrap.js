@@ -58,6 +58,7 @@ class App {
       this.plt += el;
       this.audio.update(el);
       this.input.update(el);
+      this.render.update(el);
       this.overlay.update(el);
       
       if (this.input.state & K.QUIT) {

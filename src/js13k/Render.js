@@ -10,6 +10,15 @@ export class Render {
     this.app = app;
     this.cvs = cvs;
     this.gfx = document.getElementById("gfx");
+    this.bgf = 0; // Background animation frame.
+    this.bgc = 0; // Background animation clock.
+  }
+  
+  update(el) {
+    if ((this.bgc -= el) <= 0) {
+      this.bgc += 0.200;
+      if (++this.bgf >= 4) this.bgf = 0;
+    }
   }
   
   render() {
@@ -43,10 +52,13 @@ export class Render {
     if (rowz > this.app.map.h) rowz = this.app.map.h;
     for (let row=rowa, dsty=rowa*TS-cy; row<=rowz; row++, dsty+=TS) {
       for (let col=cola, dstx=cola*TS-cx, p=row*this.app.map.w+cola; col<=colz; col++, dstx+=TS, p++) {
-        //TODO quarter tiles
-        //TODO tile animation
-        const srcx = (this.app.map.v[p] & 15) * TS;
-        const srcy = (this.app.map.v[p] >> 4) * TS;
+        //TODO quarter tiles ...out of scope for js13k
+        let ti = this.app.map.v[p];
+        if (!ti) { // Water animates.
+          ti += this.bgf;
+        }
+        const srcx = (ti & 15) * TS;
+        const srcy = (ti >> 4) * TS;
         ctx.drawImage(this.gfx, srcx, srcy, TS, TS, dstx, dsty, TS, TS);
       }
     }

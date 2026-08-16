@@ -74,20 +74,24 @@ For js13k 2026, theme "UNICORNS AND RAINBOWS".
 - [ ] Suspend on focus loss.
 
 - [ ] Phase One. Don't stop until we're *over* 13 kB.
-- - [ ] Map.
+- - [x] Map. Out of scope for js13k.
 - - [x] Sound effects.
 - - [x] Music. Voice mp3 in Logic as I usually do, but do it good: That will go in the CD-ROM Edition. Probly the single biggest driver of bulk.
-- - [ ] Machete.
-- - [ ] Bomb.
-- - [ ] Caves.
+- - [x] Machete. Out of scope for js13k.
+- - [x] Bomb. Out of scope for js13k.
+- - [x] Caves. Out of scope for js13k.
 - - [x] Track time and report at gameover.
 - - [x] Also track treasures vs total digs, give an Accuracy score.
 - - [x] Show the skeleton at gameover.
 - - [x] Wand: Make the rejection look different from dig rejection. Thinking a frown face with a rainbow for the mouth?
-- - [ ] Wand: When within 2m or so, a toast that just says like "near!"
+- - [x] Wand: When within 2m or so, a toast that just says like "near!"
 - - [x] Don't stop immediately on digging the last treasure. Let its toast and sound play a bit, and fade out.
-- - [ ] Animate Dot walking.
-- - [ ] Animate water.
+- - [x] Animate Dot walking.
+- - [x] Animate water.
+- - [ ] 20 bones is too many. How about 13?
+- - [ ] World is too big. Keep it tight.
+- - [ ] Arbitrary goalpost: I should be able to complete it under 2:00 most of the time. Currently more like 5:00.
+- - [ ] Number keys for instant item change.
 - [x] Phase Two.
 - - [x] Optimize PNG. -- Currently dummy. Ready to play with, once we start The Squeeze.
 - - [x] Reencode MIDI.
