@@ -1,3 +1,4 @@
+all_and_show_size:
 all:
 .SILENT:
 .SECONDARY:
@@ -44,7 +45,7 @@ $(TOOL_EXE):$(TOOL_OFILES) $(EGG_OFILES);$(PRECMD) $(LD) -o$@ $^ $(LDPOST)
 JS13K_SRCDIR:=src/js13k
 JS13K_MIDDIR:=mid/js13k
 JS13K_ZIP:=out/justbelow-js13k.zip
-JS13K_MIN_SRC:=$(filter $(JS13K_SRCDIR)/%.js $(JS13K_SRCDIR)/js13k/%.html,$(SRCFILES))
+JS13K_MIN_SRC:=$(filter $(JS13K_SRCDIR)/%.js $(JS13K_SRCDIR)/%.html,$(SRCFILES))
 JS13K_HTML_MID:=$(JS13K_MIDDIR)/index.html
 JS13K_DATA_SRC:=$(filter $(JS13K_SRCDIR)/%.png,$(SRCFILES))
 JS13K_DATA_MID:=$(patsubst $(JS13K_SRCDIR)/%,$(JS13K_MIDDIR)/%,$(JS13K_DATA_SRC))
@@ -64,13 +65,32 @@ $(JS13K_MIDDIR)/%:$(JS13K_SRCDIR)/% $(TOOL_EXE);$(PRECMD) $(TOOL_EXE) -o$@ $<
 
 # And a plain ZIP file at the end, with everything at its root.
 # We also dump the size of everything after this step, since we surely want to know that. It's a size coding contest.
-$(JS13K_ZIP):$(JS13K_HTML_MID) $(JS13K_DATA_MID);$(PRECMD) zip -j -9 $@ $^ && unzip -l $@ && ls -l out
+$(JS13K_ZIP):$(JS13K_HTML_MID) $(JS13K_DATA_MID);$(PRECMD) zip -j -9 $@ $^
 
 # ----- cdrom edition -----
 
-#TODO cdrom
+CDROM_SRCDIR:=src/cdrom
+CDROM_MIDDIR:=mid/cdrom
+CDROM_ZIP:=out/justbelow-cdrom.zip
+CDROM_MIN_SRC:=$(filter $(CDROM_SRCDIR)/%.js $(CDROM_SRCDIR)/%.html,$(SRCFILES))
+CDROM_HTML_MID:=$(CDROM_MIDDIR)/index.html
+CDROM_DATA_SRC:=$(filter $(CDROM_SRCDIR)/%.png $(CDROM_SRCDIR)/%.mp3,$(SRCFILES))
+CDROM_DATA_MID:=$(patsubst $(CDROM_SRCDIR)/%,$(CDROM_MIDDIR)/%,$(CDROM_DATA_SRC))
+all:$(CDROM_ZIP)
+
+# Nothing like JS13K's MIDI rules. CDROM's music is mp3, and it copies verbatim.
+
+$(CDROM_HTML_MID):$(CDROM_MIN_SRC);$(PRECMD) $(EGG_SDK)/out/eggdev minify -o$@ $(CDROM_SRCDIR)/index.html
+
+# Data in general will copy verbatim. But as a rule, we pass it thru the optimizer. Must use the same build process as JS13K, no cheating.
+$(CDROM_MIDDIR)/%:$(CDROM_SRCDIR)/% $(TOOL_EXE);$(PRECMD) $(TOOL_EXE) -o$@ $<
+
+$(CDROM_ZIP):$(CDROM_HTML_MID) $(CDROM_DATA_MID);$(PRECMD) zip -j -9 $@ $^
 
 # ----- global commands -----
+
+# Default rule builds 'all' and then shows the size of output artifacts.
+all_and_show_size:all;ls -l out
 
 # `make run` to serve js13k edition from the source. Great while developing, but beware it's not exactly the real thing.
 run:$(JS13K_MIDI_DST);http-server -c-1 -p8080 src/js13k

@@ -23,6 +23,7 @@ For js13k 2026, theme "UNICORNS AND RAINBOWS".
 - - Map. Automatically reveals areas you've visited, the rest are murky. And marks treasures you've dug up.
 - - Machete. Cut thru foliage.
 - - Bomb. Open caves.
+- - ...For js13k, ended up with just Wand, Shovel, and Compass. You have them all from the start. Compass is entirely passive.
 - At its most basic, we only need Wand and Shovel.
 - Helpers that can incrementally mark undiscovered treasures on the map. Maybe only indicating which island?
 - How about fishing off the boat? Find bones out in the open water too.
@@ -37,12 +38,15 @@ For js13k 2026, theme "UNICORNS AND RAINBOWS".
 
 - Straight JS. No Egg, Wasm, Shovel, just write from scratch in JS.
 - Copy Egg's minifier? Or whatever. Start with serving directly only, and ensure it always works that way.
+- - ...Using Egg by reference for build. Helpful, because we also have a native tool that borrows Egg bits.
 - Sound effects: Assume we'll have a set of enumerated sound effects. Something that translates neatly into WebAudio.
-- Music: Start from MIDI and assume we'll pack that into something tighter. No pitch bend. Maybe no FM?
+- Music: Start from MIDI and assume we'll pack that into something tighter. No pitch bend. Maybe no FM? ...see below
 - Control:
 - - Dpad to walk. In boat, it moves the same as walking.
-- - Action, Inventory, and Pause buttons.
+- - Action, Inventory, and Pause buttons. ...nixed pause
 - - Hold Inventory button and you can L/R to change the equipped item. Full inventory visible at all times.
+- - - Did it this way but in hindsight it's overkill. We only have two equippable items. Could have just mapped one to each button.
+- - - But don't change it, because I expect the Deluxe CD-ROM Edition will have a richer set of equippables.
 - World map is generated as a huge grid.
 - - [x] Should we make one map per island, and not record anything for the vast waters between?
 - - - NO. Don't need the extra complication, and memory is cheap.
@@ -57,51 +61,20 @@ For js13k 2026, theme "UNICORNS AND RAINBOWS".
 
 ## Agenda
 
-- [ ] 1. Write the whole game the way I want it, and don't worry about size. Aim to complete by 30 Aug.
+- [x] 1. Write the whole game the way I want it, and don't worry about size. Aim to complete by 30 Aug.
 - [x] 2. Write the build pipeline: minification, compression, and automated optimization.
 - [ ] 3. Optimize manually and eliminate features until it fits. That's our js13k release. Aim to complete by 5 Sept.
 - [ ] 4. Restore all those features and bulk out further, for the Deluxe CD-ROM edition.
 
-2026-08-14: Second day, and I'm almost done Phase One. But I want a firmer build pipeline before implementing audio, since there will necessarily be some conversion involved.
-  So, will finish Phase Two before Phase One.
+- 2026-08-14: Second day, and I'm almost done Phase One. But I want a firmer build pipeline before implementing audio, since there will necessarily be some conversion involved.
+- - So, will finish Phase Two before Phase One.
+- 2026-08-16: Finished Phase One, and Two was basically done already. Way ahead of schedule!
 
 ## TODO
 
-- [x] Minified build is not taking keyboard input.
-- - Due to bug in egg's minifier. Workaround: Don't mask variable names with a lambda parameter. Use unique names always.
-- [x] Need to ensure that there's treasure on whichever island you start on, otherwise user will be confused.
-- - Make it the Compass. Hard to find the next island without one.
-- - Actually no. All treasures are bones, and you start with the compass. I don't think it's necessary to require treasure on the first island.
-- [x] Suspend on focus loss.
-
-- [x] Phase One. Don't stop until we're *over* 13 kB.
-- - [x] Map. Out of scope for js13k.
-- - [x] Sound effects.
-- - [x] Music. Voice mp3 in Logic as I usually do, but do it good: That will go in the CD-ROM Edition. Probly the single biggest driver of bulk.
-- - [x] Machete. Out of scope for js13k.
-- - [x] Bomb. Out of scope for js13k.
-- - [x] Caves. Out of scope for js13k.
-- - [x] Track time and report at gameover.
-- - [x] Also track treasures vs total digs, give an Accuracy score.
-- - [x] Show the skeleton at gameover.
-- - [x] Wand: Make the rejection look different from dig rejection. Thinking a frown face with a rainbow for the mouth?
-- - [x] Wand: When within 2m or so, a toast that just says like "near!"
-- - [x] Don't stop immediately on digging the last treasure. Let its toast and sound play a bit, and fade out.
-- - [x] Animate Dot walking.
-- - [x] Animate water.
-- - [x] 20 bones is too many. How about 13?
-- - [x] World is too big. Keep it tight. ...200x150 feels good. Islands nice and close. Max 20 seconds to reach a world edge.
-- - [x] Arbitrary goalpost: I should be able to complete it under 2:00 most of the time. Currently more like 5:00. ...2:30 ish is now typical, and that's good.
-- - [x] Number keys for instant item change. ...nevermind. Using Left Shift as CHOOSE makes WASD usable, no need for the extra logic.
-- - [x] Restart after gameover.
-- [x] Phase Two.
-- - [x] Optimize PNG. -- Currently dummy. Ready to play with, once we start The Squeeze.
-- - [x] Reencode MIDI.
-- - [x] Conditionalize js. Can we pass it thru cpp first? I want at the text level to go like `if js13k ...text... else if cdrom ...text... end`, and have that handled before minification.
-- - - Going to treat cdrom edition as a completely independent fork. We'll copy js13k edition once it's stable, then modify from there.
 - [ ] Phase Three.
-- - [x] Record the pre-squeeze commit, so we can return there for the Deluxe CD-ROM Edition. ...not necessary
 - - [ ] Squeeze.
+- - - 13845 at the start. Just need to shave 533 bytes off this. No sweat.
 - - - [ ] I bet we can reduce the JS size considerably by preferring globals over class members.
 - - - [ ] For that matter, don't use classes.
 - - [ ] js13k submission.
