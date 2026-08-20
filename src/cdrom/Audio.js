@@ -18,14 +18,12 @@ export class Audio {
     this.evtp = 0;
     this.sst = 0;
     this.dur = 0;
+    this.song = "";
+    this.songElement = null;
+    this.songNode = null;
     if (!AudioContext) return; // I don't think this ever happens but hey.
     this.ctx = new AudioContext({ latencyHint: "interactive" });
     if (this.ctx.state === "suspended") this.ctx.resume();
-    
-    const node = new MediaElementAudioSourceNode(this.ctx, {
-      mediaElement: document.getElementById("song_unicorn"),
-    });
-    node.connect(this.ctx.destination);
   }
   
   poke() {
@@ -44,10 +42,31 @@ export class Audio {
      */
   }
   
+  playSong(name, repeat) {
+    if (name === this.song) return;
+    if (this.songElement) {
+      this.songElement.remove();
+      this.songElement = null;
+    }
+    if (this.songNode) {
+      this.songNode.disconnect();
+      this.songNode = null;
+    }
+    this.song = name;
+    this.songElement = document.createElement("audio");
+    if (repeat) this.songElement.loop = true;
+    this.songElement.autoplay = true;
+    this.songElement.src = `./${name}.mp3`;
+    document.body.appendChild(this.songElement);
+    this.songNode = new MediaElementAudioSourceNode(this.ctx, {
+      mediaElement: this.songElement,
+    });
+    this.songNode.connect(this.ctx.destination);
+  }
+  
   /* (post) is null or (osc,env,t)=>env, return the node to connect to output
    * Time zero is legal for "asap".
    * This was part of the song playback in js13k edition; we're using it only for sound effects.
-   * XXX And even that is probably temporary. Consider recording all the sound effects and embedding as WAV or whatever.
    */
   note(t, c, n, d, post) {
     if (!this.ctx) return;

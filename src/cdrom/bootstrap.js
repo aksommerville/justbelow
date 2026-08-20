@@ -34,7 +34,7 @@ class App {
   }
   resume() {
     if (this.term) return;
-    if (!this.win) this.audio.resume();
+    if (this.win) this.audio.resume();
     this.paused = 0;
   }
   
@@ -60,6 +60,7 @@ class App {
     ));
     
     this.audio.resume();
+    this.audio.playSong("unicorn", true);
     this.overlay.reset();
   }
   
@@ -104,10 +105,9 @@ class App {
       
         if (this.trmc > 0) {
           if ((this.trmc -= el) <= 0) {
-            //this.term = true;
             this.win = true;
             this.render.renderWin();
-            this.audio.pause();
+            this.audio.playSong("found_the_bones", false);
           }
         }
       }
