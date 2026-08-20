@@ -52,8 +52,11 @@ export class Render {
     if (rowz > this.app.map.h) rowz = this.app.map.h;
     for (let row=rowa, dsty=rowa*TS-cy; row<=rowz; row++, dsty+=TS) {
       for (let col=cola, dstx=cola*TS-cx, p=row*this.app.map.w+cola; col<=colz; col++, dstx+=TS, p++) {
-        //TODO quarter tiles ...out of scope for js13k
         let ti = this.app.map.v[p];
+        if (ti) { // 0x10=sand, 0x11=sand+hole. And that's actually everything, except water.
+          this.quarterTile(ctx, dstx, dsty, 192, 96, 48, 48, p);
+          if (ti === 0x10) continue;
+        }
         if (!ti) { // Water animates.
           ti += this.bgf;
         }
@@ -85,6 +88,47 @@ export class Render {
       ctx.fillStyle = "#000";
       ctx.fillRect(0, 0, this.cvs.width, this.cvs.height);
       ctx.globalAlpha = 1;
+    }
+  }
+  
+  quarterTile(ctx, dstx, dsty, srcx, srcy, colw, rowh, cellp) {
+    const v = this.app.map.v;
+    const w = this.app.map.w;
+    const neighbors = (dx, dy) => { // 1=horz, 2=vert, 3=diag. Diagonal is only reported if both horz and vert present. So there's 5 possible values.
+      let n = (v[cellp+dx]?1:0)|(v[cellp+dy*w]?2:0);
+      if (n === 3) n |= (v[cellp+dx+dy*w]?4:0);
+      return n;
+    };
+    const sub = (dc, dr, sc, sr) => {
+      ctx.drawImage(this.gfx, srcx + sc * colw, srcy + sr * rowh, colw, rowh, dstx + dc * colw, dsty + dr * rowh, colw, rowh);
+    };
+    switch (neighbors(-1,-1)) { // NW
+      case 0: sub(0, 0, 2, 0); break;
+      case 1: sub(0, 0, 4, 0); break;
+      case 2: sub(0, 0, 4, 1); break;
+      case 3: sub(0, 0, 6, 0); break;
+      case 7: sub(0, 0, 0, 0); break;
+    }
+    switch (neighbors(1,-1)) { // NE
+      case 0: sub(1, 0, 3, 0); break;
+      case 1: sub(1, 0, 4, 0); break;
+      case 2: sub(1, 0, 5, 1); break;
+      case 3: sub(1, 0, 7, 0); break;
+      case 7: sub(1, 0, 1, 0); break;
+    }
+    switch (neighbors(-1, 1)) { // SW
+      case 0: sub(0, 1, 2, 1); break;
+      case 1: sub(0, 1, 5, 0); break;
+      case 2: sub(0, 1, 4, 1); break;
+      case 3: sub(0, 1, 6, 1); break;
+      case 7: sub(0, 1, 0, 1); break;
+    }
+    switch (neighbors(1, 1)) { // SE
+      case 0: sub(1, 1, 3, 1); break;
+      case 1: sub(1, 1, 5, 0); break;
+      case 2: sub(1, 1, 5, 1); break;
+      case 3: sub(1, 1, 7, 1); break;
+      case 7: sub(1, 1, 1, 1); break;
     }
   }
   

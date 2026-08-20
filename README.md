@@ -70,6 +70,7 @@ For js13k 2026, theme "UNICORNS AND RAINBOWS".
 - - So, will finish Phase Two before Phase One.
 - 2026-08-16: Finished Phase One, and Two was basically done already. Way ahead of schedule!
 - 2026-08-16+an hour or so: Phase Three was a breeze, just removing unused graphics got us under the line.
+- 2026-08-19: Existing js13k assets have all been upped for cdrom. 749115 bytes. We need to double that at a bare minimum.
 
 ## TODO
 
@@ -80,9 +81,9 @@ For js13k 2026, theme "UNICORNS AND RAINBOWS".
 - - - [x] Bump everything to 96px tiles instead of 16px, and a 1920x1080 framebuffer.
 - - - [x] Redraw existing tiles at the higher resolution.
 - - - [x] Text: Use CanvasRenderingContext2D's built-in text rendering, no need for our custom 3x5.
-- - [ ] Rich tiles. Neighbor joining etc.
+- - [x] Rich tiles. Neighbor joining etc.
 - - [x] mp3 music instead of synth.
-- - [ ] Recorded sound effects instead of synth.
+- - [x] Recorded sound effects instead of synth. ...decline. I like the synth sounds.
 - - [ ] Hello modal.
 - - [ ] Different kinds of treasure and different ways of detecting them.
 - [ ] Rich cover pic that promises way more than the game can deliver, in the fashion of 80s console games :)
