@@ -75,7 +75,7 @@ For js13k 2026, theme "UNICORNS AND RAINBOWS".
 
 ## TODO
 
-- [ ] js13k submission.
+- [x] js13k submission.
 - [x] Deluxe CD-ROM Edition.
 - - [x] Copy js13k initially.
 - - [x] High resolution graphics.
@@ -87,7 +87,7 @@ For js13k 2026, theme "UNICORNS AND RAINBOWS".
 - - [x] Recorded sound effects instead of synth. ...decline. I like the synth sounds.
 - - [x] Hello modal.
 - - [x] Different kinds of treasure and different ways of detecting them. ...it's too much and i'm losing interest
-- [ ] Rich cover pic that promises way more than the game can deliver, in the fashion of 80s console games :)
+- [x] Rich cover pic that promises way more than the game can deliver, in the fashion of 80s console games :)
 - - js13k wants 320x320 and 800x500 (if it's the same as last year), and itch wants 630x500.
 - [x] Mini comic? ...nah
 
