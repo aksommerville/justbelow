@@ -64,18 +64,19 @@ For js13k 2026, theme "UNICORNS AND RAINBOWS".
 - [x] 1. Write the whole game the way I want it, and don't worry about size. Aim to complete by 30 Aug.
 - [x] 2. Write the build pipeline: minification, compression, and automated optimization.
 - [x] 3. Optimize manually and eliminate features until it fits. That's our js13k release. Aim to complete by 5 Sept.
-- [ ] 4. Restore all those features and bulk out further, for the Deluxe CD-ROM edition.
+- [x] 4. Restore all those features and bulk out further, for the Deluxe CD-ROM edition.
 
 - 2026-08-14: Second day, and I'm almost done Phase One. But I want a firmer build pipeline before implementing audio, since there will necessarily be some conversion involved.
 - - So, will finish Phase Two before Phase One.
 - 2026-08-16: Finished Phase One, and Two was basically done already. Way ahead of schedule!
 - 2026-08-16+an hour or so: Phase Three was a breeze, just removing unused graphics got us under the line.
 - 2026-08-19: Existing js13k assets have all been upped for cdrom. 749115 bytes. We need to double that at a bare minimum.
+- 2026-08-20: Added two more songs and an enormous hello pic, now cdrom edition is over 1.44 MB. Calling it done.
 
 ## TODO
 
 - [ ] js13k submission.
-- [ ] Deluxe CD-ROM Edition.
+- [x] Deluxe CD-ROM Edition.
 - - [x] Copy js13k initially.
 - - [x] High resolution graphics.
 - - - [x] Bump everything to 96px tiles instead of 16px, and a 1920x1080 framebuffer.
@@ -84,11 +85,11 @@ For js13k 2026, theme "UNICORNS AND RAINBOWS".
 - - [x] Rich tiles. Neighbor joining etc.
 - - [x] mp3 music instead of synth.
 - - [x] Recorded sound effects instead of synth. ...decline. I like the synth sounds.
-- - [ ] Hello modal.
+- - [x] Hello modal.
 - - [x] Different kinds of treasure and different ways of detecting them. ...it's too much and i'm losing interest
 - [ ] Rich cover pic that promises way more than the game can deliver, in the fashion of 80s console games :)
 - - js13k wants 320x320 and 800x500 (if it's the same as last year), and itch wants 630x500.
-- [ ] Mini comic?
+- [x] Mini comic? ...nah
 
 ## BinarySong ".bs", Song Format For js13k Edition
 

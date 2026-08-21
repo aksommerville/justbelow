@@ -177,4 +177,10 @@ export class Render {
     sec %= 60;
     return `${min}:${sec.toString().padStart(2, '0')}.${ms.toString().padStart(3, '0')}`;
   }
+  
+  hello() {
+    const ctx = this.cvs.getContext("2d");
+    const img = document.getElementById("hello");
+    ctx.drawImage(img, 0, 0);
+  }
 }

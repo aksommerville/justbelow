@@ -40,6 +40,7 @@ class App {
   
   reset() {
     this.term = false;
+    this.hello = true;
     this.map = generateMap();
     this.sprites = [];
     this.win = false;
@@ -60,8 +61,9 @@ class App {
     ));
     
     this.audio.resume();
-    this.audio.playSong("unicorn", true);
+    this.audio.playSong("to_the_tropics", true);
     this.overlay.reset();
+    this.render.hello();
   }
   
   update(t) {
@@ -86,7 +88,12 @@ class App {
         this.input.update(el);
         this.render.update(el);
         
-        if (this.win) {
+        if (this.hello) {
+          if ((this.input.state & K.USE) && !(this.pvin & K.USE)) {
+            this.hello = false;
+            this.audio.playSong("unicorn", true);
+          }
+        } else if (this.win) {
           if ((this.input.state & K.USE) && !(this.pvin & K.USE)) {
             this.reset();
           }
@@ -112,7 +119,7 @@ class App {
         }
       }
       
-      if (!this.win) {
+      if (!this.win && !this.hello) {
         this.render.render();
       }
     }

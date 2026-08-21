@@ -14,6 +14,7 @@ export class Hero {
     
     this.pvinput = this.app.input.state;
     this.pvitemid = 0; // Set at button down, may linger.
+    this.itembo = true;
     
     // Highlight (the rainbow).
     this.hlx = 0;
@@ -153,8 +154,12 @@ export class Hero {
      * And if the overlay is enabled, send dpad clicks to it.
      */
     if (this.app.input.state !== this.pvinput) {
-      if ((this.app.input.state & K.USE) && !(this.pvinput & K.USE)) this.onUse();
-      else if (!(this.app.input.state & K.USE) && (this.pvinput & K.USE)) this.onUnuse();
+      if (this.itembo) {
+        if (!(this.app.input.state & K.USE)) this.itembo = false;
+      } else {
+        if ((this.app.input.state & K.USE) && !(this.pvinput & K.USE)) this.onUse();
+        else if (!(this.app.input.state & K.USE) && (this.pvinput & K.USE)) this.onUnuse();
+      }
       if ((this.app.input.state & K.CHOOSE) && !(this.pvinput & K.CHOOSE)) this.app.overlay.enable();
       else if (!(this.app.input.state & K.CHOOSE) && (this.pvinput & K.CHOOSE)) this.app.overlay.disable();
       if (this.app.overlay.enabled) {
